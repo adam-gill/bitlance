@@ -11,7 +11,7 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center pt-8">
         <h1 className="text-6xl items-center justify-center mb-4">BitLance</h1>
         <h1 className="flex items-center justify-center mb-4">
-          Hey team! I've initialized this next/react app for use to use as our
+          Hey team! I&#39;ve initialized this next/react app for use to use as our
           front end throughout this project
         </h1>
         <ImageLoader

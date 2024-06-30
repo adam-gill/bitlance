@@ -19,6 +19,12 @@ const config = {
     },
     extend: {
       colors: {
+        
+        primaryBitlanceGray: "#D2D0CB",
+        primaryBitlanceDark: "#181818",
+        primaryBitlanceLightGreen: "#DFFE00",
+        
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

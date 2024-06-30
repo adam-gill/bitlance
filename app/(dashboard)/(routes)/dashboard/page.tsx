@@ -1,5 +1,7 @@
 import React from 'react';
 
+// example route
+
 const Dashboard = () => {
     return (
         <div>

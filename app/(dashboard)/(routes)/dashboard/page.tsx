@@ -1,6 +1,6 @@
 import React from 'react';
 
-// example route
+// example route 
 
 const Dashboard = () => {
     return (

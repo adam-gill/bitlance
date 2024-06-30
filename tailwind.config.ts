@@ -19,6 +19,12 @@ const config = {
     },
     extend: {
       colors: {
+        
+        primaryBitlanceGray: "#D2D0CB",
+        primaryBitlanceDark: "#181818",
+        primaryBitlanceLightGreen: "#DFFE00",
+        
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -68,6 +74,11 @@ const config = {
           to: { height: "0" },
         },
       },
+      backgroundImage: {
+        'bitlance-map': "url('/svg/map.svg')",
+        
+      },
+      
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",

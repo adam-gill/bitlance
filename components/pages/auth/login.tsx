@@ -20,7 +20,7 @@ const LoginPage =()=>{
                 <CardHeader className="flex justify-center items-center"><span className="text-6xl text-white">Welcome</span></CardHeader>
                 <CardDescription className="flex justify-center items-center pb-4" >We are glad to see you back with us</CardDescription>
                 <CardContent className="flex  flex-col gap-4 justify-between items-center w-full">
-                        <Input  className="w-3/4 " placeholder="Email"/>
+                        <Input   className="w-3/4 " placeholder="Email"/>
                         <Input type="password" className="w-3/4 " placeholder="Password"/>
                         <div className="w-3/4 flex justify-end ">
             <Button className="flex justify-end">LOGIN</Button>

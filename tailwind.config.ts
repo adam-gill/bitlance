@@ -76,6 +76,7 @@ const config = {
       },
       backgroundImage: {
         'bitlance-map': "url('/svg/map.svg')",
+        'bitlance-hero': "url('/svg/hero.svg')",
         
       },
       

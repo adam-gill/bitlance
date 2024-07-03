@@ -28,7 +28,7 @@ const SignupPage = () => {
                     SIGN UP
                   </Button>
                 </div>
-                <Separator className="w-full my-4" />
+                <Separator className="w-full my-2" />
                 <Button className="w-full h-12 border-primaryBitlanceLightGreen bg-transparent text-primaryBitlanceLightGreen hover:bg-primaryBitlanceLightGreen hover:text-black transition duration-300 flex items-center justify-center gap-2" variant="outline">
                   <FcGoogle className="w-6 h-6" />
                   <span>Login with Google</span>
@@ -36,7 +36,7 @@ const SignupPage = () => {
               </CardContent>
             </Card>
           </div>
-          <div className="bg-bitlance-hero bg-cover bg-no-repeat w-full h-full rounded-3xl" style={{ maxHeight: "calc(100% - 0.9rem)" }}></div>
+          <div className="bg-bitlance-hero bg-cover bg-no-repeat w-full h-full rounded-3xl"></div>
         </div>
       </div>
     </>

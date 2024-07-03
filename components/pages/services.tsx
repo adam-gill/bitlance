@@ -71,9 +71,9 @@ const ServicesPage = () => {
                           <Image
                             src={service.imgSrc}
                             alt={service.imgAlt}
+                            className="bg-transparent"
                             width={58}
                             height={40}
-                            className="bg-transparent"
                           />
                         </div>
                       </CardHeader>

@@ -2,7 +2,7 @@
 import React from 'react';
 
 // example route 
-import { redirect } from 'next/navigation'
+
 import { useSession,signOut } from "next-auth/react";
 
 

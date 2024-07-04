@@ -1,11 +1,26 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/card";
+"use client"
+import React, { useState } from "react";
+
+import { Card,CardContent,CardHeader,CardFooter,CardTitle, CardDescription } from "@/components/ui/card";
+
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 
-const SignupPage = () => {
+import { signup } from "@/app/(auth)/action";
+const SignupPage =()=>{
+        const [email,setEmail] = useState("");
+        const [password,setPassword] = useState("");
+        const [username,setUserName] = useState("");
+        
+        const handleSignUp =async()=>{
+                const res = await signup({email,password,username});
+                console.log(res);
+        }
+
+    
   return (
     <>
       <div className="flex justify-center items-center w-full h-screen bg-white text-black">
@@ -19,12 +34,12 @@ const SignupPage = () => {
                 We are glad to have you as part of our community!
               </CardDescription>
               <CardContent className="flex flex-col gap-4 justify-center items-center">
-                <Input className="w-full p-3 rounded-md" placeholder="Email" />
-                <Input className="w-full p-3 rounded-md" placeholder="Username" />
-                <Input type="password" className="w-full p-3 rounded-md" placeholder="Password" />
+                <Input onChange={(e)=>setEmail(e.target.value)} className="w-full p-3 rounded-md" placeholder="Email" />
+                <Input  onChange={(e)=>setUserName(e.target.value)} className="w-full p-3 rounded-md" placeholder="Username" />
+                <Input onChange={(e)=>setPassword(e.target.value)} type="password" className="w-full p-3 rounded-md" placeholder="Password" />
                 <Input type="password" className="w-full p-3 rounded-md" placeholder="Confirm Password" />
                 <div className="w-full flex justify-end">
-                  <Button className="flex justify-center w-full py-3 bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300">
+                  <Button onClick={handleSignUp} className="flex justify-center w-full py-3 bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300">
                     SIGN UP
                   </Button>
                 </div>

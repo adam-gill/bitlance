@@ -8,10 +8,12 @@ CREATE TYPE "Status" AS ENUM ('OPEN', 'CLOSED', 'COMPLETED', 'INPROGRESS');
 CREATE TABLE "User" (
     "user_id" TEXT NOT NULL,
     "username" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
     "discord_handle" TEXT,
-    "role" "Role" NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'FREELANCER',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("user_id")
 );
@@ -59,6 +61,9 @@ CREATE TABLE "Job" (
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("job_id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Client_company_name_key" ON "Client"("company_name");

@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 
 import { Card,CardContent,CardHeader,CardFooter,CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -9,7 +10,16 @@ import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { CiUser } from "react-icons/ci";
 
+import { signup } from "@/app/(auth)/action";
 const SignupPage =()=>{
+        const [email,setEmail] = useState("");
+        const [password,setPassword] = useState("");
+        const [username,setUserName] = useState("");
+        
+        const handleSignUp =async()=>{
+                const res = await signup({email,password,username});
+                console.log(res);
+        }
 
     return(<>
     <div className="flex justify-center items-center w-full h-screen bg-white text-black">
@@ -20,12 +30,12 @@ const SignupPage =()=>{
                 <CardHeader className="flex justify-center items-center"><span className="text-2xl text-white">CREATE ACCOUNT</span></CardHeader>
                 <CardDescription className="flex justify-center items-center pb-4" >We are glad to see you being part of us</CardDescription>
                 <CardContent className="flex  flex-col gap-4 justify-between items-center w-full">
-                        <Input  className="w-3/4 " placeholder="Email"/>
-                        <Input  className="w-3/4 " placeholder="username"/>
-                        <Input type="password" className="w-3/4 " placeholder="Password"/>
+                        <Input onChange={(e)=>setEmail(e.target.value)} className="w-3/4 " placeholder="Email"/>
+                        <Input  onChange={(e)=>setUserName(e.target.value)}  className="w-3/4 " placeholder="username"/>
+                        <Input onChange={(e)=>setPassword(e.target.value)} type="password" className="w-3/4 " placeholder="Password"/>
                         <Input type="password" className="w-3/4 " placeholder="Confirm Password"/>
                         <div className="w-3/4 flex justify-end ">
-            <Button className="flex justify-end">SIGNUP</Button>
+            <Button onClick={handleSignUp} className="flex justify-end">SIGNUP</Button>
           </div>
          
           <Separator className="w-3/4" />

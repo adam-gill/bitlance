@@ -6,6 +6,9 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+  
+  
 }
 
 datasource db {
@@ -17,10 +20,12 @@ datasource db {
 model User {
   user_id        String       @id @default(uuid())
   username       String
+  password       String
+  email          String       @unique
   created_at     DateTime     @default(now())
   name           String
   discord_handle String?
-  role           Role
+  role           Role  @default(FREELANCER)
   client         Client?
   freelancer     Freelancer?
 }

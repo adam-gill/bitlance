@@ -1,15 +1,36 @@
+"use client"
 import React from "react";
 
 import { Card,CardContent,CardHeader,CardFooter,CardTitle, CardDescription } from "@/components/ui/card";
-
+import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { CiUser } from "react-icons/ci";
+import { login } from "@/app/(auth)/action";
+import { UserLogin } from "@/config/apiconfig";
+
+
+import { useRouter } from "next/navigation";
 
 const LoginPage =()=>{
+        const [email,setEmail] = useState("");
+        const [password,setPassword] = useState("");
+        const router = useRouter()
+        
+        
+        const handleLogin =async()=>{
+                const res = await UserLogin({email,password});
+                console.log("res res respnse2",res);
+                if(res?.ok){
+                        router.replace('/dashboard')
+
+
+                }
+
+        }
 
     return(<>
     <div className="flex justify-center items-center w-full h-screen bg-white text-black">
@@ -20,10 +41,10 @@ const LoginPage =()=>{
                 <CardHeader className="flex justify-center items-center"><span className="text-2xl text-white">WELCOME</span></CardHeader>
                 <CardDescription className="flex justify-center items-center pb-4" >We are glad to see you back with us</CardDescription>
                 <CardContent className="flex  flex-col gap-4 justify-between items-center w-full">
-                        <Input   className="w-3/4 " placeholder="Email"/>
-                        <Input type="password" className="w-3/4 " placeholder="Password"/>
+                        <Input  onChange={(e)=>setEmail(e.target.value)}  className="w-3/4 " placeholder="Email"/>
+                        <Input onChange={(e)=>setPassword(e.target.value)} type="password" className="w-3/4 " placeholder="Password"/>
                         <div className="w-3/4 flex justify-end ">
-            <Button className="flex justify-end">LOGIN</Button>
+            <Button onClick={handleLogin} className="flex justify-end">LOGIN</Button>
           </div>
          
           <Separator className="w-3/4" />

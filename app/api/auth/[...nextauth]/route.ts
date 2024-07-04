@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 
+
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
@@ -46,6 +47,11 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }: any) {
       // Modify JWT payload if needed
+      if (user) {
+        token.user = user;
+        
+        }
+      
       console.log("user user",user)
       return { ...token, ...user };
     },
@@ -61,10 +67,18 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
-//   pages: {
-//     signIn: '/login',
-//     error: '/login'
-//   },
+  pages: {
+    signIn: '/login',
+    error: '/login',
+    signOut: '/'
+  },
+  //adapter: PrismaAdapter(prisma),
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+    maxAge: 60 * 60 * 24 * 30,
+    
+  },
+
 });
 
 export { handler as GET, handler as POST }

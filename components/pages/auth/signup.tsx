@@ -1,32 +1,28 @@
 "use client"
 import React, { useState } from "react";
-
-import { Card,CardContent,CardHeader,CardFooter,CardTitle, CardDescription } from "@/components/ui/card";
-
-
+import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
-
 import { signup } from "@/app/(auth)/action";
-const SignupPage =()=>{
-        const [email,setEmail] = useState("");
-        const [password,setPassword] = useState("");
-        const [username,setUserName] = useState("");
-        
-        const handleSignUp =async()=>{
-                const res = await signup({email,password,username});
-                console.log(res);
-        }
 
-    
+const SignupPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUserName] = useState("");
+
+  const handleSignUp = async () => {
+    const res = await signup({ email, password, username });
+    console.log(res);
+  };
+
   return (
     <>
       <div className="flex justify-center items-center w-full h-screen bg-white text-black">
-        <div className="bg-primaryBitlanceDark h-3/4 w-3/4 rounded-3xl grid grid-cols-2 text-white shadow-lg">
-          <div className="flex flex-col justify-center items-center h-full">
-            <Card className="w-3/4 h-full bg-transparent border-none">
+        <div className="bg-primaryBitlanceDark h-auto md:h-3/4 w-11/12 md:w-3/4 rounded-3xl grid grid-cols-1 md:grid-cols-2 text-white shadow-lg overflow-hidden">
+          <div className="flex flex-col justify-center items-center h-full p-8">
+            <Card className="w-full h-full bg-transparent border-none">
               <CardHeader className="flex justify-center items-center">
                 <span className="text-3xl font-bold text-white">CREATE ACCOUNT</span>
               </CardHeader>
@@ -34,12 +30,32 @@ const SignupPage =()=>{
                 We are glad to have you as part of our community!
               </CardDescription>
               <CardContent className="flex flex-col gap-4 justify-center items-center">
-                <Input onChange={(e)=>setEmail(e.target.value)} className="w-full p-3 rounded-md" placeholder="Email" />
-                <Input  onChange={(e)=>setUserName(e.target.value)} className="w-full p-3 rounded-md" placeholder="Username" />
-                <Input onChange={(e)=>setPassword(e.target.value)} type="password" className="w-full p-3 rounded-md" placeholder="Password" />
-                <Input type="password" className="w-full p-3 rounded-md" placeholder="Confirm Password" />
+                <Input
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-3 rounded-md"
+                  placeholder="Email"
+                />
+                <Input
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="w-full p-3 rounded-md"
+                  placeholder="Username"
+                />
+                <Input
+                  onChange={(e) => setPassword(e.target.value)}
+                  type="password"
+                  className="w-full p-3 rounded-md"
+                  placeholder="Password"
+                />
+                <Input
+                  type="password"
+                  className="w-full p-3 rounded-md"
+                  placeholder="Confirm Password"
+                />
                 <div className="w-full flex justify-end">
-                  <Button onClick={handleSignUp} className="flex justify-center w-full py-3 bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300">
+                  <Button
+                    onClick={handleSignUp}
+                    className="flex justify-center w-full py-3 bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300"
+                  >
                     SIGN UP
                   </Button>
                 </div>
@@ -51,7 +67,7 @@ const SignupPage =()=>{
               </CardContent>
             </Card>
           </div>
-          <div className="bg-bitlance-hero bg-cover bg-no-repeat w-full h-full rounded-3xl"></div>
+          <div className="hidden md:flex justify-center items-center bg-bitlance-hero bg-cover bg-no-repeat w-full h-full rounded-3xl"></div>
         </div>
       </div>
     </>

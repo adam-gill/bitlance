@@ -31,7 +31,7 @@ export default withAuth(
       }
 
       // Define the allowed base paths
-      const allowedPaths = ["login", "/", "login", "signup"];
+      const allowedPaths = ["ADMIN", "FREELANCER", "login", "signup"];
 
       // Extract the base path from the requested URL
       const basePath = req.nextUrl.pathname.split("/")[1]; // Get the first segment after the initial "/"
@@ -63,6 +63,7 @@ export const config = {
   matcher: [
     
     "/dashboard/:path*",
+    
     
   ],
 };

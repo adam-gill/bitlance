@@ -6,15 +6,31 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { signup } from "@/app/(auth)/action";
+import { UserSignUp } from "@/config/apiconfig";
+import { useRouter } from "next/navigation";
 
 const SignupPage = () => {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUserName] = useState("");
+  const [error, setError] = useState<string | null | undefined>("");
 
   const handleSignUp = async () => {
-    const res = await signup({ email, password, username });
-    console.log(res);
+    const data = {
+      email: email as string,
+      password: password as string,
+      username:username as string,
+    }
+    const res = await UserSignUp(data)
+    console.log("res error",res)
+    if(res?.status === 201){
+      router.replace('/login')
+      }else{
+        setError("error")  
+      }
+    console.log("register error",res);
   };
 
   return (

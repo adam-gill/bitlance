@@ -36,8 +36,10 @@ export const UserSignUp = async (userDetails: Data) => {
         redirect: false,
       });
       console.log("weeeh",res)
+     
       return res;
     } catch (error) {
       console.log("failed to register", error);
+      
     }
   };

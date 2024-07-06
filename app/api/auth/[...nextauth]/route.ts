@@ -47,6 +47,7 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }: any) {
       // Modify JWT payload if needed
+      
       if (user) {
         token.user = user;
         

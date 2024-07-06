@@ -7,8 +7,9 @@ type Data = {
   };
 
 export const UserSignUp = async (userDetails: Data) => {
+  
     try {
-      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/user/signup`, {
+      const res = await fetch(`/api/user/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

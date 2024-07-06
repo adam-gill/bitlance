@@ -16,15 +16,18 @@ const LoginPage = () => {
   const router = useRouter();
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
     const res = await UserLogin({ email, password });
     console.log("res res response", res);
-    if (res?.ok) {
+    if (res?.status == 200) {
       router.replace('/dashboard');
-    }else{
-      
+    }else{   
      
 
-      setError(res?.error);
+      setError(res?.error?.split(":")[1].trim());
     }
   };
 

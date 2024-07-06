@@ -6,15 +6,46 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { signup } from "@/app/(auth)/action";
+import { UserSignUp } from "@/config/apiconfig";
+import { useRouter } from "next/navigation";
+import { NotificationAuth } from "@/components/errorNotification";
 
 const SignupPage = () => {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUserName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null | undefined>("");
 
   const handleSignUp = async () => {
-    const res = await signup({ email, password, username });
-    console.log(res);
+    if (!email || !password || !confirmPassword || !username) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    const data = {
+      email: email as string,
+      password: password as string,
+      username:username as string,
+    }
+    const res = await UserSignUp(data)
+    console.log("res error",res)
+    if(res?.status === 201){
+      router.replace('/login')
+      }else{
+        const {message} =await res?.json()
+        
+        setError(message)  
+      }
+    console.log("register error",res);
   };
 
   return (
@@ -34,20 +65,25 @@ const SignupPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full p-3 rounded-md"
                   placeholder="Email"
+                  required={true}
                 />
                 <Input
                   onChange={(e) => setUserName(e.target.value)}
                   className="w-full p-3 rounded-md"
+                  required={true}
                   placeholder="Username"
                 />
                 <Input
                   onChange={(e) => setPassword(e.target.value)}
                   type="password"
+                  required={true}
                   className="w-full p-3 rounded-md"
                   placeholder="Password"
                 />
                 <Input
+                onChange={(e) => setConfirmPassword(e.target.value)}
                   type="password"
+                  required={true}
                   className="w-full p-3 rounded-md"
                   placeholder="Confirm Password"
                 />
@@ -59,6 +95,7 @@ const SignupPage = () => {
                     SIGN UP
                   </Button>
                 </div>
+                <NotificationAuth message={error}/>
                 <Separator className="w-full my-2" />
                 <Button className="w-full h-12 border-primaryBitlanceLightGreen bg-transparent text-primaryBitlanceLightGreen hover:bg-primaryBitlanceLightGreen hover:text-black transition duration-300 flex items-center justify-center gap-2" variant="outline">
                   <FcGoogle className="w-6 h-6" />

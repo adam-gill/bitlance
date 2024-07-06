@@ -7,17 +7,27 @@ import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { UserLogin } from "@/config/apiconfig";
+import { NotificationAuth } from "@/components/errorNotification";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null | undefined>("");
   const router = useRouter();
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
     const res = await UserLogin({ email, password });
     console.log("res res response", res);
-    if (res?.ok) {
+    if (res?.status == 200) {
       router.replace('/dashboard');
+    }else{   
+     
+
+      setError(res?.error?.split(":")[1].trim());
     }
   };
 
@@ -41,6 +51,10 @@ const LoginPage = () => {
                     LOGIN
                   </Button>
                 </div>
+                
+                <NotificationAuth message={error}/>
+                
+               
                 <Separator className="w-full my-4" />
                 <Button className="w-full h-12 border-primaryBitlanceLightGreen bg-transparent text-primaryBitlanceLightGreen hover:bg-primaryBitlanceLightGreen hover:text-black transition duration-300 flex items-center justify-center gap-2" variant="outline">
                   <FcGoogle className="w-6 h-6" />

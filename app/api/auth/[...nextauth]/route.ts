@@ -27,7 +27,9 @@ const handler = NextAuth({
           console.log("res vcbnx",res)
 
           if (res.status != 200) {
-            throw new Error(`Failed to authenticate: ${res.status} ${res.statusText}`);
+            //throw new Error(`Failed to authenticate: ${res.status} ${res.statusText}`);
+            const {message} = await res.json()
+            throw new Error(message)
           }
 
           const user = await res.json();
@@ -38,7 +40,7 @@ const handler = NextAuth({
           }
         } catch (err: any) {
           console.error("Authorization error:", err);
-          throw new Error("Failed to authenticate user");
+          throw new Error(err);
         }
       },
     }),
@@ -47,6 +49,7 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }: any) {
       // Modify JWT payload if needed
+      
       if (user) {
         token.user = user;
         

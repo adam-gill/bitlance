@@ -3,7 +3,7 @@ import React from 'react';
 
 // example route 
 
-import { useSession,signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 
 import { Button } from '@/components/ui/button';

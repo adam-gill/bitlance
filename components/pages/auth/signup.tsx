@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,15 +9,18 @@ import { signup } from "@/app/(auth)/action";
 import { UserSignUp } from "@/config/apiconfig";
 import { useRouter } from "next/navigation";
 import { NotificationAuth } from "@/components/errorNotification";
+import { TailSpin } from "react-loading-icons";
 
 const SignupPage = () => {
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUserName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null | undefined>("");
+
+  
 
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword || !username) {
@@ -36,8 +39,12 @@ const SignupPage = () => {
       password: password as string,
       username:username as string,
     }
+    setLoading(true)
     const res = await UserSignUp(data)
     console.log("res error",res)
+    if (res) {
+      setLoading(false)
+    } 
     if(res?.status === 201){
       router.replace('/login')
       }else{
@@ -47,6 +54,20 @@ const SignupPage = () => {
       }
     console.log("register error",res);
   };
+
+  const keyPress = useCallback(
+    (e: any) => {
+      if (e.key === "Enter") {
+        handleSignUp()
+      }
+    },
+    [email, password, confirmPassword, username]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyPress);
+    return () => document.removeEventListener("keydown", keyPress);
+  }, [keyPress]);
 
   return (
     <>
@@ -86,13 +107,14 @@ const SignupPage = () => {
                   required={true}
                   className="w-full p-3 rounded-md"
                   placeholder="Confirm Password"
+                  id="lastInput"
                 />
                 <div className="w-full flex justify-end">
                   <Button
                     onClick={handleSignUp}
                     className="flex justify-center w-full py-3 bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300"
                   >
-                    SIGN UP
+                    {loading ? <TailSpin stroke="#181818" width={32} strokeWidth={3} speed={2} /> : "SIGN UP"}
                   </Button>
                 </div>
                 <NotificationAuth message={error}/>

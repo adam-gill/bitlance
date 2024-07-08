@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.25;
 
-import "contracts/IBITLANCE.sol";
-import "contracts/libCheckAddress.sol";
-import "contracts/BITLANCEMANAGEMENT.sol";
+import "./IBITLANCE.sol";
+import "./libCheckAddress.sol";
+import "./BITLANCEMANAGEMENT.sol";
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract BITLANCE is IBITLANCE,BITLANCEMANAGEMENT{

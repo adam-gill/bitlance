@@ -21,6 +21,7 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.4.0",
     "@supabase/supabase-js": "^2.44.2",
+    "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "blurhash": "^2.0.5",
     "class-variance-authority": "^0.7.0",

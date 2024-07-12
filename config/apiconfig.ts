@@ -1,10 +1,36 @@
 import { signIn } from "next-auth/react";
 import axios from 'axios';
+import { Role } from "@prisma/client"; // Adjust this import based on your Prisma generated types
+
 
 type Data = {
   username?: string;
   password: string;
   email: string;
+};
+
+type userData = {
+  username?: string;
+  password: string;
+  email: string;
+  role: Role;
+  freelancer?: FreelancerData | null;
+  client?: ClientData | null;
+}
+
+type FreelancerData = {
+  user_id: string;
+  bio: string;
+  skills: string;
+  portfolio_link: string;
+  social_link: string;
+};
+
+type ClientData = {
+  user_id: string;
+  company_name: string;
+  company_description: string | null;
+  websiteLink: string | null; // Include websiteLink in ClientData
 };
 
 type jobData = {
@@ -13,22 +39,21 @@ type jobData = {
   user_id: string;
 }
 
-export const UserSignUp = async (userDetails: Data) => {
+export const UserSignUp = async (userDetails: userData) => {
   try {
-    const res = await fetch(`/api/user/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: userDetails.username,
-        password: userDetails.password,
-        email: userDetails.email,
-      }),
+    const res = await axios.post('/api/user/signup', {
+      username: userDetails.username,
+      password: userDetails.password,
+      email: userDetails.email,
+      role: userDetails.role,
+      freelancer: userDetails.freelancer,
+      client: userDetails.client,
     });
-    return res;
+
+    return res.data; // Return the response data
   } catch (error) {
-    console.log("failed to register", error);
+    console.error('Failed to register:', error);
+    throw error; // Re-throw the error to handle it elsewhere if needed
   }
 };
 

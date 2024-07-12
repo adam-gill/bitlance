@@ -1,26 +1,73 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSession, signOut } from "next-auth/react";
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { freelancerDetails, clientDetails } from "@/config/apiconfig";
+import axios from 'axios';
+
+interface FreelancerData {
+    bio: string;
+    skills: string;
+    portfolio_link: string;
+    social_link: string;
+}
+
+interface ClientData {
+    company_name: string;
+    company_description: string;
+    websiteLink: string;
+}
 
 const Dashboard: React.FC = () => {
     const { data: session } = useSession();
     const [isFreelancer, setIsFreelancer] = useState(true);
-
+    const [freelancerData, setFreelancerData] = useState<FreelancerData | null>(null);
+    const [clientData, setClientData] = useState<ClientData | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
+    useEffect(() => {
+        const fetchData = async () => {
+            const userId = session?.user.data.user_id;
+  
+            if (userId) {
+                try {
+                    if (isFreelancer) {
+                        const res = await freelancerDetails(userId);
+                        setFreelancerData(res?.data);
+                        setErrorMessage(null);
+                    } else {
+                        const res = await clientDetails(userId);
+                        setClientData(res?.data);
+                        setErrorMessage(null);
+                    }
+                } catch (error: any) {
+                    if (error.response && error.response.status === 400) {
+                        setErrorMessage(isFreelancer ? "User doesn't have a freelancer profile." : "User doesn't have a client profile.");
+                    } else {
+                        console.error("Failed to fetch data:", error);
+                        setErrorMessage("An error occurred. Please try again.");
+                    }
+                }
+            }
+        };
+  
+        fetchData();
+    }, [isFreelancer, session?.user.data.user_id]);
+  
     const handleSignOut = async () => {
         await signOut({ redirect: true, callbackUrl: "/" });
     };
-
+  
     const handleSwitchChange = (checked: boolean) => {
         setIsFreelancer(checked);
     };
-
+  
     const handleBrowseJobs = () => {
         console.log("Browsing jobs...");
         // Add your browse jobs logic here
     };
-
+  
     const handleCreateJob = () => {
         console.log("Creating a job...");
         // Add your create job logic here
@@ -48,12 +95,32 @@ const Dashboard: React.FC = () => {
                         <p className="mb-2"><span className="font-bold">Role:</span> {session?.user.data.role}</p>
                     </section>
                     <section className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
-                        <h2 className="text-xl md:text-2xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">{isFreelancer ? 'Projects' : 'Client Projects'}</h2>
-                        {/* Add your project details or list here based on isFreelancer */}
-                        {isFreelancer ? (
-                            <p>Display freelancer projects here.</p>
+                        <h2 className="text-xl md:text-2xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">{isFreelancer ? 'Freelancer Details' : 'Client Details'}</h2>
+                        {errorMessage ? (
+                            <p className="text-red-500">{errorMessage}</p>
                         ) : (
-                            <p>Display client projects here.</p>
+                            isFreelancer ? (
+                                freelancerData ? (
+                                    <div>
+                                        <p className="mb-2"><span className="font-bold">Bio:</span> {freelancerData.bio}</p>
+                                        <p className="mb-2"><span className="font-bold">Skills:</span> {freelancerData.skills}</p>
+                                        <p className="mb-2"><span className="font-bold">Portfolio Link:</span> {freelancerData.portfolio_link}</p>
+                                        <p className="mb-2"><span className="font-bold">Social Link:</span> {freelancerData.social_link}</p>
+                                    </div>
+                                ) : (
+                                    <p>Loading freelancer data...</p>
+                                )
+                            ) : (
+                                clientData ? (
+                                    <div>
+                                        <p className="mb-2"><span className="font-bold">Company Name:</span> {clientData.company_name}</p>
+                                        <p className="mb-2"><span className="font-bold">Company Description:</span> {clientData.company_description}</p>
+                                        <p className="mb-2"><span className="font-bold">Website Link:</span> {clientData.websiteLink}</p>
+                                    </div>
+                                ) : (
+                                    <p>Loading client data...</p>
+                                )
+                            )
                         )}
                     </section>
                 </div>

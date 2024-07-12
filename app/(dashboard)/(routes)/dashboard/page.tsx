@@ -24,37 +24,50 @@ const Dashboard: React.FC = () => {
     const [isFreelancer, setIsFreelancer] = useState(true);
     const [freelancerData, setFreelancerData] = useState<FreelancerData | null>(null);
     const [clientData, setClientData] = useState<ClientData | null>(null);
-
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
     useEffect(() => {
         const fetchData = async () => {
             const userId = session?.user.data.user_id;
-
+  
             if (userId) {
-                if (isFreelancer) {
-                    const res = await freelancerDetails(userId);
-                    setFreelancerData(res?.data);
-                } else {
-                    const res = await clientDetails(userId);
-                    setClientData(res?.data);
+                try {
+                    if (isFreelancer) {
+                        const res = await freelancerDetails(userId);
+                        setFreelancerData(res?.data);
+                        setErrorMessage(null);
+                    } else {
+                        const res = await clientDetails(userId);
+                        setClientData(res?.data);
+                        setErrorMessage(null);
+                    }
+                } catch (error: any) {
+                    if (error.response && error.response.status === 400) {
+                        setErrorMessage(isFreelancer ? "User doesn't have a freelancer profile." : "User doesn't have a client profile.");
+                    } else {
+                        console.error("Failed to fetch data:", error);
+                        setErrorMessage("An error occurred. Please try again.");
+                    }
                 }
             }
         };
+  
         fetchData();
     }, [isFreelancer, session?.user.data.user_id]);
-
+  
     const handleSignOut = async () => {
         await signOut({ redirect: true, callbackUrl: "/" });
     };
-
+  
     const handleSwitchChange = (checked: boolean) => {
         setIsFreelancer(checked);
     };
-
+  
     const handleBrowseJobs = () => {
         console.log("Browsing jobs...");
         // Add your browse jobs logic here
     };
-
+  
     const handleCreateJob = () => {
         console.log("Creating a job...");
         // Add your create job logic here
@@ -83,9 +96,11 @@ const Dashboard: React.FC = () => {
                     </section>
                     <section className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
                         <h2 className="text-xl md:text-2xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">{isFreelancer ? 'Freelancer Details' : 'Client Details'}</h2>
-                        {isFreelancer ? (
-                            <div>
-                                {freelancerData ? (
+                        {errorMessage ? (
+                            <p className="text-red-500">{errorMessage}</p>
+                        ) : (
+                            isFreelancer ? (
+                                freelancerData ? (
                                     <div>
                                         <p className="mb-2"><span className="font-bold">Bio:</span> {freelancerData.bio}</p>
                                         <p className="mb-2"><span className="font-bold">Skills:</span> {freelancerData.skills}</p>
@@ -94,11 +109,9 @@ const Dashboard: React.FC = () => {
                                     </div>
                                 ) : (
                                     <p>Loading freelancer data...</p>
-                                )}
-                            </div>
-                        ) : (
-                            <div>
-                                {clientData ? (
+                                )
+                            ) : (
+                                clientData ? (
                                     <div>
                                         <p className="mb-2"><span className="font-bold">Company Name:</span> {clientData.company_name}</p>
                                         <p className="mb-2"><span className="font-bold">Company Description:</span> {clientData.company_description}</p>
@@ -106,8 +119,8 @@ const Dashboard: React.FC = () => {
                                     </div>
                                 ) : (
                                     <p>Loading client data...</p>
-                                )}
-                            </div>
+                                )
+                            )
                         )}
                     </section>
                 </div>

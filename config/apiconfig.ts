@@ -96,7 +96,7 @@ export const getAllJobs = async () => {
 }
 
 export const updateJob = async (job_id: string, user_id: string) => {
-  const res = await axios.put(`${process.env.NEXTAUTH_URL}/api/job`,
+  const res = await axios.put(`/api/job`,
     {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ job_id, user_id })
@@ -121,31 +121,27 @@ export const getAccess = async (user_id: string) => {
 
 export const freelancerDetails = async (user_id: string) => {
   try {
-    const url = new URL(`${process.env.NEXTAUTH_URL}/api/user/freelancer`);
-    url.searchParams.append("user_id", user_id);
-    const res = await axios.get(url.toString(),
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const res = await axios.get('/api/user/freelancer', {
+      params: { user_id },
+      headers: { "Content-Type": "application/json" },
+    });
     console.log("R", res);
-    return res;
+    return res.data; // Return the response data
   } catch (error) {
-    console.error("Something went wrong", error);
+    console.error("Failed to fetch freelancer details:", error);
+    throw error; // Re-throw the error to handle it elsewhere if needed
   }
-}
+};
 
 export const clientDetails = async (user_id: string) => {
   try {
-    const url = new URL(`${process.env.NEXTAUTH_URL}/api/user/client`);
-    url.searchParams.append("user_id", user_id);
-    const res = await axios.get(url.toString(),
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    return res;
+    const res = await axios.get('/api/user/client', {
+      params: { user_id },
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data; // Return the response data
   } catch (error) {
-    console.error("Something went wrong", error);
+    console.error("Failed to fetch client details:", error);
+    throw error; // Re-throw the error to handle it elsewhere if needed
   }
-}
+};

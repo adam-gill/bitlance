@@ -69,31 +69,32 @@ const SignupPage = () => {
       freelancer: role === "FREELANCER" || role === "BOTH" ? freelancerData : undefined,
       client: role === "CLIENT" || role === "BOTH" ? clientData : undefined,
     };
-
+  
     // Validate required fields
     const requiredFields = [email, password, username, confirmPassword];
     let allInputsConfigured = requiredFields.every(field => !!field);
-
+  
     if (role === 'FREELANCER' || role === 'BOTH') {
       const freelancerFields = [freelancerData.bio, freelancerData.skills, freelancerData.portfolio_link, freelancerData.social_link];
       allInputsConfigured = allInputsConfigured && freelancerFields.every(field => !!field);
     }
-
+  
     if (role === 'CLIENT' || role === 'BOTH') {
       const clientFields = [clientData.company_name, clientData.company_description, clientData.websiteLink];
       allInputsConfigured = allInputsConfigured && clientFields.every(field => !!field);
     }
-
+  
     if (!allInputsConfigured) {
       setError("Please fill in all required fields.");
       return;
     }
-
+  
     setLoading(true);
     try {
       const res = await UserSignUp(data);
+      console.log(res);
       setLoading(false);
-      if (res.status === 201) {
+      if (res.success === true) {
         // Registration was successful
         console.log('User registered successfully');
         router.replace('/login'); // Redirect to login page
@@ -106,7 +107,7 @@ const SignupPage = () => {
       setLoading(false);
     }
   };
-
+  
   const keyPress = React.useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
@@ -119,7 +120,7 @@ const SignupPage = () => {
   const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRole(e.target.value as Role);
   };
-
+  
   const handleClientDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setClientData((prevClientData) => ({
@@ -127,7 +128,7 @@ const SignupPage = () => {
       [name]: value,
     }));
   };
-
+  
   const handleFreelancerDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFreelancerData((prevFreelancerData) => ({

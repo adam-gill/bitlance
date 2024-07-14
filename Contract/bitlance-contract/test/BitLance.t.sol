@@ -38,6 +38,7 @@ contract BITLANCETEST is Test {
         vm.label(tokenB, "tokenB");
         bitlance.addToken(address(usdc));
         usdc.mint(freelancer,1000);
+         usdc.mint(client,1000);
     }
 
     /****
@@ -120,6 +121,26 @@ contract BITLANCETEST is Test {
        
         
     }
+
+// init job
+
+function test_initJob()public{
+    test_jobRequest();
+    vm.startPrank(client);
+    
+     usdc.approve(address(bitlance), jobAmount);
+    bitlance.initializeJob(jobIds[1],freelancer,address(usdc));
+    (uint256 _amount,address _stable,address _selected,address _client,bool isStarted,bool isPaid,bool hasConflict) = bitlance.jobs(jobIds[1]);
+    assertEq(_amount, jobAmount);
+    assertEq(_client, client);
+    assertEq(isStarted, true);
+    assertEq(isPaid, false);
+    assertEq(hasConflict, false);
+    assertEq(_selected, freelancer);
+    assertEq(address(usdc),_stable);
+
+    vm.stopPrank();
+}
 
 
 }

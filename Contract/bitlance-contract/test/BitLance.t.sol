@@ -18,17 +18,7 @@ contract BITLANCETEST is Test {
     event RequestJob(address indexed _freelancer,string indexed _jobid);
     event InitJob(address indexed  client,address indexed  freelancer,string jobid,uint256 _amout);
 
-    // struct Job {
-    //     string jobid;
-    //     uint256 amount;
-    //     address stableCoinToken;
-    //     address[] freelancers;
-    //     address selectedFreelancer;
-    //     address client;
-    //     bool isStarted;
-    //     bool isPaid;
-    //     bool hasConflict;
-    // }
+    
 
     function setUp() public {
         bitlance = new BITLANCE();
@@ -192,6 +182,18 @@ function test_raiseConflict()public{
     vm.stopPrank();
     
 }
+
+//refund to freelancer after a conflict
+function test_refundToFreelancerAfterConflict()public{
+    test_raiseConflict();
+    bitlance.refund(jobIds[1],freelancer);
+    (uint256 _amount,address _stable,address _selected,address _client,bool isStarted,bool isPaid,bool hasConflict) = bitlance.jobs(jobIds[1]);
+     assertEq(isPaid, true);
+
+   
+
+}
+
 
 
 }

@@ -142,5 +142,25 @@ function test_initJob()public{
     vm.stopPrank();
 }
 
+//release payment
+function test_releasePayment()public{
+    test_initJob();
+    vm.startPrank(client);
+    bitlance.releasePayament(jobIds[1]);
+
+    (uint256 _amount,address _stable,address _selected,address _client,bool isStarted,bool isPaid,bool hasConflict) = bitlance.jobs(jobIds[1]);
+    assertEq(_amount, jobAmount);
+    assertEq(_client, client);
+    assertEq(isStarted, true);
+    assertEq(isPaid, true);
+    assertEq(hasConflict, false);
+    assertEq(_selected, freelancer);
+    assertEq(address(usdc),_stable);
+
+
+
+    vm.stopPrank();
+}
+
 
 }

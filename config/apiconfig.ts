@@ -37,6 +37,7 @@ type jobData = {
   description: string;
   category: string;
   user_id: string;
+  price: number;
 }
 
 export const UserSignUp = async (userDetails: userData) => {
@@ -73,11 +74,11 @@ export const UserLogin = async (userDetails: Data) => {
 
 export const createJob = async (jobDetails: jobData) => {
   try {
-    const { description, category, user_id } = jobDetails;
-    const res = await axios.post(`${process.env.NEXTAUTH_URL}/api/job`, 
+    const { description, category, user_id, price } = jobDetails;
+    const res = await axios.post('/api/job', 
       {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description, category, user_id })
+        body: JSON.stringify({ description, category, user_id, price })
       }
     );
     return res;
@@ -87,22 +88,31 @@ export const createJob = async (jobDetails: jobData) => {
 }
 
 export const getAllJobs = async () => {
-  const res = await axios.get(`${process.env.NEXTAUTH_URL}/api/job`,
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return res;
+  try {
+    const res = await axios.get('/api/job',
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return res;
+  } catch (error) {
+    console.error("Something went wrong", error);
+  }
 }
 
-export const updateJob = async (job_id: string, user_id: string) => {
-  const res = await axios.put(`/api/job`,
-    {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ job_id, user_id })
-    }
-  );
-  return res;
+export const updateJob = async (jobDetails: jobData, job_id: string) => {
+  const { description, category, user_id, price } = jobDetails;
+  try {
+    const res = await axios.put('/api/job',
+      {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ job_id, user_id, description, category, price })
+      }
+    );
+    return res;
+  } catch (error) {
+    console.error("Something went wrong", error);
+  }
 }
 
 export const getAccess = async (user_id: string) => {

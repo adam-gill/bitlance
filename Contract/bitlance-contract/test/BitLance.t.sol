@@ -162,5 +162,19 @@ function test_releasePayment()public{
     vm.stopPrank();
 }
 
+//confirm freelancer balance
+function test_confirmFreelancerBalance()public{
+    test_releasePayment();
+    uint256 newBalance =  usdc.balanceOf(freelancer);
+    assertEq(newBalance, jobAmount+(1000*10**18));
+}
+
+//confirm client balance
+function test_confirmClientBalance()public{
+    test_releasePayment();
+    uint256 newBalance =  usdc.balanceOf(client);
+    assertEq(newBalance, (1000*10**18)-jobAmount);
+}
+
 
 }

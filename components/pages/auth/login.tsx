@@ -59,7 +59,7 @@ const LoginPage = () => {
   return (
     <>
       <div className="flex justify-center items-center w-full h-screen bg-white text-black">
-        <div className="bg-primaryBitlanceDark h-auto md:h-3/4 w-11/12 md:w-3/4 rounded-3xl grid grid-cols-1 md:grid-cols-2 text-white shadow-lg">
+        <div className="bg-primaryBitlanceDark h-auto md:h-3/4 w-11/12 md:w-3/4 rounded-3xl text-white shadow-lg">
           <div className="flex flex-col justify-center items-center h-full p-8">
             <Card className="w-full h-full bg-transparent border-none">
               <CardHeader className="flex justify-center items-center">
@@ -103,7 +103,6 @@ const LoginPage = () => {
               </CardContent>
             </Card>
           </div>
-          <div className="bg-bitlance-hero bg-cover bg-no-repeat w-full h-full rounded-3xl hidden md:block"></div>
         </div>
       </div>
     </>

@@ -13,7 +13,7 @@ const LandingPage = () => {
   return (
     <div className="w-full h-screen bg-primaryBitlanceDark text-primaryBitlanceGray">
       <div className="flex flex-col gap-8 items-center w-full justify-center h-full px-4 md:px-0">
-        <h1 className="text-3xl md:text-6xl font-bold text-white text-center">Find Your Dream Job Today!</h1>
+        <h1 className="text-3xl mt-12 pt-12 md:text-6xl font-bold text-white text-center">Find Your Dream Job Today!</h1>
         <span className="text-center text-sm md:text-base">Connecting Talent with Opportunity: Your Gateway to Career Success</span>
         <Button
           disabled={false}

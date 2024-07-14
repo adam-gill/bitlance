@@ -4,9 +4,11 @@ pragma solidity ^0.8.25;
 import {Test, console} from "forge-std/Test.sol";
 
 import {BITLANCE}  from "../src/BITLANCE.sol";
+import {USDCMOCK} from "../src/ERC20MOCK.sol";
 
 contract BITLANCETEST is Test{
 BITLANCE public bitlance;
+USDCMOCK public usdc;
 address public tokenA = address(1);
 address public tokenB = address(2);
 address public manager1= address(3);
@@ -18,9 +20,13 @@ address public manager1= address(3);
 
 function setUp()public{
     bitlance = new BITLANCE();
+    usdc = new USDCMOCK();
+    
     vm.label(tokenA, "tokenA");
     vm.label(tokenB, "tokenB");
-    bitlance.addToken(tokenA);
+    bitlance.addToken(address(usdc));
+    usdc.mint(tokenA,1000);
+    
 
    
 
@@ -33,9 +39,10 @@ function setUp()public{
  * 3. check if the call is a manager
  * 4. check an address not  manager
  * 5. add another address to the manager list
+ * 6. check user balance
  */
 function test_checkIfTokenIsAllowed()public view{
-   bool isAllowed =  bitlance.allowedTokens(tokenA);
+   bool isAllowed =  bitlance.allowedTokens(address(usdc));
      assertEq(isAllowed, true);
 }
 
@@ -61,6 +68,10 @@ function test_addNewManager2()public {
     }
 
 
+function test_usdcBalance()public view{
+    uint256 balance = usdc.balanceOf(tokenA);
+    assertEq(balance, 1000*10**18);
+}
 
 
 

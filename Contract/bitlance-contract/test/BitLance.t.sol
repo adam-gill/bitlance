@@ -14,7 +14,7 @@ function setUp()public{
 }
 
 function test_true()public{
-    assertEq(1,1);
+     assertEq(true, true);
 }
 
 

@@ -176,5 +176,22 @@ function test_confirmClientBalance()public{
     assertEq(newBalance, (1000*10**18)-jobAmount);
 }
 
+//raise conflict
+function test_raiseConflict()public{
+    test_initJob();
+    vm.startPrank(freelancer);
+    bitlance.raiseConflict(jobIds[1]);
+    (uint256 _amount,address _stable,address _selected,address _client,bool isStarted,bool isPaid,bool hasConflict) = bitlance.jobs(jobIds[1]);
+    assertEq(_amount, jobAmount);
+    assertEq(_client, client);
+    assertEq(isStarted, true);
+    assertEq(isPaid, false);
+    assertEq(hasConflict, true);
+    assertEq(_selected, freelancer);
+    assertEq(address(usdc),_stable);
+    vm.stopPrank();
+    
+}
+
 
 }

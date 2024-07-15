@@ -1,14 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
-  
-  
 }
 
 datasource db {
@@ -18,58 +10,60 @@ datasource db {
 }
 
 model User {
-  user_id        String       @id @default(uuid())
+  user_id        String      @id @default(uuid())
   username       String
   password       String
-  email          String       @unique
-  created_at     DateTime     @default(now())
+  email          String      @unique
+  created_at     DateTime    @default(now())
   name           String
   discord_handle String?
-  role           Role  @default(FREELANCER)
+  role           Role        @default(FREELANCER)
   client         Client?
   freelancer     Freelancer?
 }
 
 model Client {
-  c_id                String     @id @default(uuid())
-  created_at          DateTime   @default(now())
-  company_name        String     @unique
+  c_id                String   @id @default(uuid())
+  created_at          DateTime @default(now())
+  company_name        String   @unique
   company_description String?
-  websiteLink         String?    @map("website/Link")
+  websiteLink         String?  @map("website/Link")
   total_jobs_posted   Int?
   total_amount_spent  Float?
   avg_rating          Float?
-  user_id             String     @unique
-  user                User       @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  user_id             String   @unique
+  user                User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   jobs                Job[]
 }
 
 model Freelancer {
-  f_id                String     @id @default(uuid())
-  created_at          DateTime   @default(now())
-  bio                 String
-  skills              String
-  portfolio_link      String
-  social_link         String
-  user_id             String     @unique
-  user                User       @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  f_id                 String   @id @default(uuid())
+  created_at           DateTime @default(now())
+  bio                  String
+  skills               String
+  portfolio_link       String
+  social_link          String
+  user_id              String   @unique
   total_jobs_completed Int?
-  total_earnings      Float?
-  avg_rating          Float?
-  jobs                Job[]
+  total_earnings       Float?
+  avg_rating           Float?
+  user                 User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  jobs                 Job[]
 }
 
 model Job {
-  job_id        String       @id @default(uuid())
-  created_at    DateTime     @default(now())
+  job_id        String      @id @default(uuid())
+  created_at    DateTime    @default(now())
   description   String
   category      String
-  freelancer_id String?      @map("freelancer_id")
-  client_id     String?      @map("client_id")
+  freelancer_id String?     @map("freelancer_id")
+  client_id     String      @map("client_id")
+  price         Float?
+  f_rating      Float?
+  c_rating      Float?
   status        Status
-
-  client        Client?      @relation(fields: [client_id], references: [c_id], onDelete: Cascade)
-  freelancer    Freelancer?  @relation(fields: [freelancer_id], references: [f_id], onDelete: Cascade)
+  client        Client      @relation(fields: [client_id], references: [c_id], onDelete: Cascade)
+  freelancer    Freelancer? @relation(fields: [freelancer_id], references: [f_id], onDelete: Cascade)
 }
 
 enum Role {

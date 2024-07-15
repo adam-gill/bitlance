@@ -8,8 +8,8 @@ export default function Login() {
   
     return (
       <>
-        <main className="min-h-screen w-full overflow-auto pt-16">
-          <SignupPage/>
+        <main className="min-h-screen w-full flex justify-center items-center pt-16">
+          <SignupPage />
         </main>
       </>
     );

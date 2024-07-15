@@ -34,12 +34,20 @@ const Dashboard: React.FC = () => {
                 try {
                     if (isFreelancer) {
                         const res = await freelancerDetails(userId);
-                        setFreelancerData(res?.data);
-                        setErrorMessage(null);
+                        if (res?.data) {
+                            setFreelancerData(res.data);
+                            setErrorMessage(null);
+                        } else {
+                            setErrorMessage("User doesn't have a freelancer profile.");
+                        }
                     } else {
                         const res = await clientDetails(userId);
-                        setClientData(res?.data);
-                        setErrorMessage(null);
+                        if (res?.data) {
+                            setClientData(res.data);
+                            setErrorMessage(null);
+                        } else {
+                            setErrorMessage("User doesn't have a client profile.");
+                        }
                     }
                 } catch (error: any) {
                     if (error.response && error.response.status === 400) {

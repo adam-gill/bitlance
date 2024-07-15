@@ -56,7 +56,10 @@ CREATE TABLE "Job" (
     "description" TEXT NOT NULL,
     "category" TEXT NOT NULL,
     "freelancer_id" TEXT,
-    "client_id" TEXT,
+    "client_id" TEXT NOT NULL,
+    "price" DOUBLE PRECISION,
+    "f_rating" DOUBLE PRECISION,
+    "c_rating" DOUBLE PRECISION,
     "status" "Status" NOT NULL,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("job_id")

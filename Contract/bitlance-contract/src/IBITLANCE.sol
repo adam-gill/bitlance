@@ -7,7 +7,7 @@ pragma solidity ^0.8.2;
 interface IBITLANCE {
 
     struct Job{
-        string jobid;
+        // string jobid;
         uint256 amount;
         address stableCoinToken;
         address[] freelancers;

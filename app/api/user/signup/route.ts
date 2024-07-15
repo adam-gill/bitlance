@@ -4,18 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/hooks/hashpassword";
 import { Role } from "@prisma/client"; // Adjust this import based on your Prisma generated types
 import { NextRequest, NextResponse } from "next/server";
+import { User } from "@/types/data-types";
 
-// Define types
-export type User = {
-  user_id: string;
-  username: string;
-  password: string;
-  email: string;
-  created_at: Date;
-  name: string;
-  discord_handle: string | null;
-  role: Role;
-};
+
 
 export type FreelancerData = {
   user_id: string;

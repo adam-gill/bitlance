@@ -32,7 +32,13 @@ contract BITLANCE is IBITLANCE,BITLANCEMANAGEMENT{
     mapping(address =>mapping(bool =>Job)) public selected;
 
 
-
+ /**
+     * Allows a freelancer to request participation in a job.
+     * _jobid: The ID of the job being requested.
+     * client: The client's address who owns the job.
+     * amount: The amount of tokens to be transferred for the job.
+     * Returns the job ID.
+     */
 
 function requestJob(string memory _jobid,address client,uint256 amount)external returns(string memory){
     Job  storage _Job = jobs[_jobid];
@@ -51,6 +57,12 @@ function requestJob(string memory _jobid,address client,uint256 amount)external 
 
 
 }
+  /**
+     * Initializes a job by selecting a freelancer and transferring tokens.
+     * _jobid: The ID of the job being initialized.
+     * freelancer: The address of the freelancer being selected for the job.
+     * stabletoken: The address of the stablecoin token used for payment.
+     */
     function initializeJob(string memory _jobid,address freelancer,address stabletoken)external onlyAllowedTokens(stabletoken){
          Job  storage _Job = jobs[_jobid];
         require(_Job.freelancers.isAddressAvailable(freelancer), "Freelancer didn't request job");
@@ -60,15 +72,16 @@ function requestJob(string memory _jobid,address client,uint256 amount)external 
         _Job.selectedFreelancer = freelancer;
         _Job.isStarted = true; 
         _Job.stableCoinToken = stabletoken;     
-        emit InitJob(msg.sender, freelancer, _jobid, _Job.amount);
-
-
-
-         
-         
+        emit InitJob(msg.sender, freelancer, _jobid, _Job.amount);    
     
 
     }
+
+ /**
+     * Releases payment to the selected freelancer for a job.
+     * _jobid: The ID of the job for which payment is being released.
+     */
+
     function releasePayament(string memory _jobid)external {
         Job  storage _Job = jobs[_jobid];
         require(_Job.freelancers.isAddressAvailable(_Job.selectedFreelancer), "Freelancer didn't request job");
@@ -78,6 +91,12 @@ function requestJob(string memory _jobid,address client,uint256 amount)external 
         require(!_Job.hasConflict,"Can't release payment due to conflict");
         sendFund(_jobid, _Job.selectedFreelancer);
     }
+
+ /**
+     * Raises a conflict for the specified job.
+     * _jobid: The ID of the job for which conflict is being raised.
+     */
+
     function raiseConflict(string memory _jobid)external{
         Job  storage _Job = jobs[_jobid];
         
@@ -86,10 +105,23 @@ function requestJob(string memory _jobid,address client,uint256 amount)external 
         _Job.hasConflict = true;
 
     }
+
+/**
+     * Refunds the specified amount to the given address for the job.
+     * _jobid: The ID of the job for which refund is being processed.
+     * _addr: The address to which refund is being sent.
+     */
+
     function refund(string memory _jobid,address _addr)external onlyManager{
         sendFund(_jobid, _addr);
 
     }
+
+/**
+     * Internal function to transfer funds to the specified address for a job.
+     * _jobid: The ID of the job for which funds are being transferred.
+     * _addr: The address to which funds are being sent.
+     */
 
     function sendFund(string memory _jobid,address _addr)internal{
          Job  storage _Job = jobs[_jobid];

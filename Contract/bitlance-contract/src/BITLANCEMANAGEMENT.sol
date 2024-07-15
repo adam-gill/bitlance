@@ -30,11 +30,22 @@ modifier onlyAllowedTokens(address _token){
     _;
 }
 
+/**
+     * Adds a new manager.
+     * _addr: The address to be added as a manager.
+     * This function sets the given address as a manager. Only callable by current managers.
+     */
+
     function addManager(address _addr)public onlyManager{
         isManager[_addr] = true;
 
     }
 
+/**
+     * Adds a new token to the allowed tokens list.
+     * _addr: The address of the token to be allowed.
+     * This function adds the given token address to the list of allowed tokens. Only callable by current managers.
+     */
      function addToken(address _addr)public onlyManager{
         allowedTokens[_addr] = true;
 

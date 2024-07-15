@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { freelancerDetails, clientDetails } from "@/config/apiconfig";
 import { FreelancerData,ClientData } from '@/types/data-types';
+import { ConnectBtn } from '@/components/Connect';
 import axios from 'axios';
 
 
@@ -79,6 +80,8 @@ const Dashboard: React.FC = () => {
                 <h1 className="text-2xl md:text-3xl text-primaryBitlanceLightGreen font-bold">
                     Welcome: {session?.user.data.email}
                 </h1>
+                <div className='w-1/4'><ConnectBtn/></div>
+                
                 <div className="flex items-center space-x-4">
                     <span className="text-primaryBitlanceLightGreen">Client</span>
                     <Switch checked={isFreelancer} onChange={handleSwitchChange} />

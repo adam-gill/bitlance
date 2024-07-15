@@ -4,20 +4,12 @@ import { useSession, signOut } from "next-auth/react";
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { freelancerDetails, clientDetails } from "@/config/apiconfig";
+import { FreelancerData,ClientData } from '@/types/data-types';
 import axios from 'axios';
 
-interface FreelancerData {
-    bio: string;
-    skills: string;
-    portfolio_link: string;
-    social_link: string;
-}
 
-interface ClientData {
-    company_name: string;
-    company_description: string;
-    websiteLink: string;
-}
+
+
 
 const Dashboard: React.FC = () => {
     const { data: session } = useSession();

@@ -77,12 +77,13 @@ export const createJob = async (jobDetails: {
   category: string;
   user_id: string;
   price: number;
+  client_address:string;
 }) => {
   try {
-    const { description, category, user_id, price } = jobDetails;
+    const { description, category, user_id, price,client_address } = jobDetails;
     const res = await axios.post(
       '/api/job',
-      { description, category, user_id, price }, // Pass data directly
+      { description, category, user_id, price,client_address }, // Pass data directly
       { headers: { "Content-Type": "application/json" } } // Pass headers in the config object
     );
     return res;
@@ -99,7 +100,7 @@ export const getAllJobs = async () => {
         headers: { "Content-Type": "application/json" },
       }
     );
-    return res;
+    return res.data;
   } catch (error) {
     console.error("Something went wrong", error);
   }

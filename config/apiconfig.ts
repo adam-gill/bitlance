@@ -100,7 +100,7 @@ export const getAllJobs = async () => {
         headers: { "Content-Type": "application/json" },
       }
     );
-    return res;
+    return res.data;
   } catch (error) {
     console.error("Something went wrong", error);
   }

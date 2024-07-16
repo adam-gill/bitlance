@@ -23,3 +23,18 @@ export type User = {
     discord_handle: string | null;
     role: Role;
   };
+
+  export interface Jobs {
+    job_id: string;
+    created_at: Date;
+    description: string;
+    category: string;
+    client_address: string;
+    freelancer_id: string | null;
+    client_id: string;
+    price: number;
+    f_rating: number | null;
+    c_rating: number | null;
+    status: Role
+  }
+  

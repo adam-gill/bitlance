@@ -3,15 +3,18 @@ import { createJob } from "@/config/apiconfig";
 import { Card, CardHeader, CardContent, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useAccount } from 'wagmi';
 
 interface JobData {
   description: string;
   category: string;
   user_id: string; // Correct property name according to API
   price: number;
+  client_address: string
 }
 
 const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: string }> = ({ isOpen, onClose, clientId }) => {
+  const {address} = useAccount();
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState('');
@@ -25,9 +28,15 @@ const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: strin
       category,
       user_id: clientId, // Use clientId as client_id
       price: parseFloat(price),
+      client_address:address as string  //new added value
+
     };
 
     try {
+      if(!address){
+        setError("Please connect your wallet");
+        return;
+      }
       await createJob(jobDetails);
       handleClose();
     } catch (err) {

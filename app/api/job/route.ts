@@ -14,10 +14,14 @@ export async function POST(request: NextRequest) {
         const payload = await request.json();
         console.log("Payload Received:", payload); // Log the entire payload
 
-        const { description, category, user_id, price } = payload;
+        const { description, category, user_id, price,client_address } = payload;
 
         if (!user_id) {
             return NextResponse.json({ success: false, message: "Missing user_id" }, { status: 400 });
+        }
+
+        if (!client_address) {
+            return NextResponse.json({ success: false, message: "Missing Wallet Address" }, { status: 400 });
         }
 
         // Fetch the client using the user_id
@@ -44,6 +48,7 @@ export async function POST(request: NextRequest) {
                 category,
                 price: parsedPrice,
                 client_id,
+                client_address:client_address,
                 status: Status.OPEN, // Ensure Status.OPEN is a valid value
             } as any,
         });

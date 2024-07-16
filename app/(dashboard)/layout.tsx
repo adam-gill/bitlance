@@ -1,5 +1,6 @@
 import Navbar from "@/components/navbar";
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -7,10 +8,12 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <div className="fixed w-full ">
+    
+        <div className="fixed w-full ">
         <Navbar />
         {children}
       </div>
+      
     </>
   );
 }

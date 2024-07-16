@@ -6,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { freelancerDetails, clientDetails } from "@/config/apiconfig";
 import { FreelancerData, ClientData } from '@/types/data-types';
 import { ConnectBtn } from '@/components/Connect';
+import { useRouter } from 'next/navigation'
 import axios from 'axios';
 import CreateJobModal from '@/components/ui/CreateJobModal';
 
@@ -16,6 +17,7 @@ const Dashboard: React.FC = () => {
   const [clientData, setClientData] = useState<ClientData | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,7 +66,7 @@ const Dashboard: React.FC = () => {
 
   const handleBrowseJobs = () => {
     console.log("Browsing jobs...");
-    // Add your browse jobs logic here
+    router.replace('/job');
   };
 
   const handleCreateJob = () => {

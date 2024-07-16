@@ -10,26 +10,48 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-    const payload = await request.json();
-    console.log("P", payload);
-    const { description, category, user_id, price } = payload; // We are getting user_id here, But to create a job we need client_id hence we would be fetching client_id from here
-    const client = await prisma.client.findUnique({ where: { user_id: user_id } }); // First we are fetching the client object from the user id, because only clients can create a job
-    const client_id = client?.c_id;
-    console.log("C", client, client_id);
-    if (client_id) {
-        console.log("P", payload);
+    try {
+        const payload = await request.json();
+        console.log("Payload Received:", payload); // Log the entire payload
+
+        const { description, category, user_id, price } = payload;
+
+        if (!user_id) {
+            return NextResponse.json({ success: false, message: "Missing user_id" }, { status: 400 });
+        }
+
+        // Fetch the client using the user_id
+        const client = await prisma.client.findUnique({
+            where: { user_id: user_id },
+        });
+
+        if (!client) {
+            return NextResponse.json({ success: false, message: "Client not found" }, { status: 404 });
+        }
+
+        const client_id = client.c_id;
+
+        // Check if `price` is a valid number
+        const parsedPrice = parseFloat(price);
+        if (isNaN(parsedPrice)) {
+            return NextResponse.json({ success: false, message: "Invalid price" }, { status: 400 });
+        }
+
+        // Create the job
         const job = await prisma.job.create({
             data: {
                 description,
                 category,
-                price: price ? Number(price) : undefined,
+                price: parsedPrice,
                 client_id,
-                status: Status.OPEN,
-            } as any
+                status: Status.OPEN, // Ensure Status.OPEN is a valid value
+            } as any,
         });
+
         return NextResponse.json({ success: true, job }, { status: 201 });
-    } else {
-        return NextResponse.json({ success: false, message: "User is not a Client" }, { status: 400 });
+    } catch (error) {
+        console.error("Error creating job:", error);
+        return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
     }
 }
 

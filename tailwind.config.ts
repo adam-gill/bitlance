@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config = {
   darkMode: ["class"],
@@ -7,7 +7,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   prefix: "",
   theme: {
     container: {
@@ -19,11 +19,9 @@ const config = {
     },
     extend: {
       colors: {
-        
         primaryBitlanceGray: "#D2D0CB",
         primaryBitlanceDark: "#181818",
         primaryBitlanceLightGreen: "#DFFE00",
-        
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -73,20 +71,28 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "slide-in": {
+          '0%': { opacity: '0', transform: 'translateY(-50px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        "slide-out": {
+          '0%': { opacity: '1', transform: 'translateY(0)' },
+          '100%': { opacity: '0', transform: 'translateY(-50px)' },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "slide-in": "slide-in 0.5s ease-out forwards",
+        "slide-out": "slide-out 0.5s ease-in forwards",
       },
       backgroundImage: {
         'bitlance-map': "url('/svg/map.svg')",
         'bitlance-hero': "url('/svg/hero.svg')",
-        
-      },
-      
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;

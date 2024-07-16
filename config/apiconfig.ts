@@ -72,18 +72,23 @@ export const UserLogin = async (userDetails: Data) => {
   }
 };
 
-export const createJob = async (jobDetails: jobData) => {
+export const createJob = async (jobDetails: {
+  description: string;
+  category: string;
+  user_id: string;
+  price: number;
+}) => {
   try {
     const { description, category, user_id, price } = jobDetails;
-    const res = await axios.post('/api/job', 
-      {
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description, category, user_id, price })
-      }
+    const res = await axios.post(
+      '/api/job',
+      { description, category, user_id, price }, // Pass data directly
+      { headers: { "Content-Type": "application/json" } } // Pass headers in the config object
     );
     return res;
   } catch (error) {
     console.log("Something went wrong", error);
+    throw error; // Ensure to throw the error so it can be caught where `createJob` is called
   }
 }
 

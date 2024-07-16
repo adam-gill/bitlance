@@ -55,6 +55,7 @@ CREATE TABLE "Job" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "description" TEXT NOT NULL,
     "category" TEXT NOT NULL,
+    "client_address" TEXT NOT NULL,
     "freelancer_id" TEXT,
     "client_id" TEXT NOT NULL,
     "price" DOUBLE PRECISION,

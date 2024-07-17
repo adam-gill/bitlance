@@ -4,10 +4,12 @@ import { Card, CardHeader, CardContent, CardDescription } from '@/components/ui/
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAccount } from 'wagmi';
+import { Category } from '@prisma/client';
 
 interface JobData {
+  title:string;
   description: string;
-  category: string;
+  category: Category;
   user_id: string; // Correct property name according to API
   price: number;
   client_address: string
@@ -20,12 +22,14 @@ const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: strin
   const [price, setPrice] = useState('');
   const [animateOut, setAnimateOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [title, settitle] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const jobDetails: JobData = {
+      title,
       description,
-      category,
+      category: category as Category,
       user_id: clientId, // Use clientId as client_id
       price: parseFloat(price),
       client_address:address as string  //new added value

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, Status } from '@prisma/client';
+import { PrismaClient, Status, Category } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -14,8 +14,7 @@ export async function POST(request: NextRequest) {
         const payload = await request.json();
         console.log("Payload Received:", payload); // Log the entire payload
 
-        const { description, category, user_id, price,client_address } = payload;
-
+        const { title, description, category, user_id, price,client_address } = payload;
         if (!user_id) {
             return NextResponse.json({ success: false, message: "Missing user_id" }, { status: 400 });
         }
@@ -40,10 +39,13 @@ export async function POST(request: NextRequest) {
         if (isNaN(parsedPrice)) {
             return NextResponse.json({ success: false, message: "Invalid price" }, { status: 400 });
         }
-
+        if(!(category in Category)){
+            return NextResponse.json({ success: false, message: "category is not of enum Category type" }, { status: 400 });
+        }
         // Create the job
         const job = await prisma.job.create({
             data: {
+                title,
                 description,
                 category,
                 price: parsedPrice,
@@ -61,7 +63,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-    const { job_id, user_id, description, category, price } = await request.json();
+    const { title, job_id, user_id, description, category, price } = await request.json();
     const job: any = await prisma.job.findUnique({ where: { job_id: job_id } });
     console.log("J", job);
     if (job) {
@@ -69,13 +71,23 @@ export async function PUT(request: NextRequest) {
             // Now check if the job has been created by this user only and only the owner of the job can edit the job
             const client: any = await prisma.client.findUnique({ where: { c_id: job.client_id } });
             console.log("Client", client);
-            if (user_id === client.user_id) { // Now the logic for the editing part
+            if (user_id === client.user_id)
+                {
+            const parsedPrice = parseFloat(price);
+            if (isNaN(parsedPrice)) {
+                return NextResponse.json({ success: false, message: "Invalid price" }, { status: 400 });
+            }
+            if(!(category in Category)){
+                return NextResponse.json({ success: false, message: "category is not of enum Category type" }, { status: 400 });
+            }
+                // Now the logic for the editing part
                 const updatedJob = await prisma.job.update({
                     where: { job_id: job_id },
                     data: {
+                        title,
                         description,
                         category,
-                        price: price ? Number(price) : undefined,
+                        price: parsedPrice,
                     } as any
                 });
                 return NextResponse.json({ success: true, updatedJob, message: "Job Updated Successfully!" }, { status: 201 });

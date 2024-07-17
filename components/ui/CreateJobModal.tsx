@@ -7,37 +7,36 @@ import { useAccount } from 'wagmi';
 import { Category } from '@prisma/client';
 
 interface JobData {
-  title:string;
+  title: string;
   description: string;
   category: Category;
-  user_id: string; // Correct property name according to API
+  user_id: string;
   price: number;
-  client_address: string
+  client_address: string;
 }
 
 const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: string }> = ({ isOpen, onClose, clientId }) => {
-  const {address} = useAccount();
+  const { address } = useAccount();
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState<Category>(Category.DESIGN); // Default value
   const [price, setPrice] = useState('');
   const [animateOut, setAnimateOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [title, settitle] = useState('');
+  const [title, setTitle] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const jobDetails: JobData = {
       title,
       description,
-      category: category as Category,
-      user_id: clientId, // Use clientId as client_id
+      category,
+      user_id: clientId,
       price: parseFloat(price),
-      client_address:address as string  //new added value
-
+      client_address: address as string
     };
 
     try {
-      if(!address){
+      if (!address) {
         setError("Please connect your wallet");
         return;
       }
@@ -85,6 +84,15 @@ const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: strin
               <form onSubmit={handleSubmit} className="w-full">
                 <div className="mb-4">
                   <Input
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full p-3 rounded-md bg-white text-gray-800"
+                    placeholder="Title"
+                    value={title}
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <Input
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full p-3 rounded-md bg-white text-gray-800"
                     placeholder="Description"
@@ -93,13 +101,18 @@ const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: strin
                   />
                 </div>
                 <div className="mb-4">
-                  <Input
-                    onChange={(e) => setCategory(e.target.value)}
+                  <select
+                    onChange={(e) => setCategory(e.target.value as Category)}
                     className="w-full p-3 rounded-md bg-white text-gray-800"
-                    placeholder="Category"
                     value={category}
                     required
-                  />
+                  >
+                    {Object.values(Category).map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="mb-4">
                   <Input

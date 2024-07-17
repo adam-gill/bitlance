@@ -6,19 +6,29 @@ import { getAllJobs } from '@/config/apiconfig'; // Import your getAllJobs funct
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+// Define the structure of the job object
+interface Job {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  status: string;
+}
+
 const JobsPage: React.FC = () => {
   const { data: session } = useSession();
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<Job[]>([]); // Ensure jobs is always an array
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // New loading state
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const res = await getAllJobs();
-        if (res?.data) {
-          setJobs(res.data.data);
+        if (res?.data && Array.isArray(res.data)) {
+          setJobs(res.data);
         } else {
           setErrorMessage("Failed to fetch jobs.");
         }
@@ -26,7 +36,7 @@ const JobsPage: React.FC = () => {
         console.error("Failed to fetch jobs:", error);
         setErrorMessage("An error occurred. Please try again.");
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
@@ -54,9 +64,9 @@ const JobsPage: React.FC = () => {
           </div>
         ) : (
           <div className="mt-8 flex flex-col items-center">
-            {jobs.length > 0 ? (
+            {jobs && jobs.length > 0 ? (
               <ul className="w-full max-w-4xl space-y-4">
-                {jobs.map((job: any) => (
+                {jobs.map((job: Job) => (
                   <li key={job.id} className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 mb-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen transition-transform transform hover:scale-105 hover:shadow-2xl">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                       <div className="flex-1">

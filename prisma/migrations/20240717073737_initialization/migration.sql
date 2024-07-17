@@ -4,6 +4,9 @@ CREATE TYPE "Role" AS ENUM ('FREELANCER', 'CLIENT', 'BOTH');
 -- CreateEnum
 CREATE TYPE "Status" AS ENUM ('OPEN', 'CLOSED', 'COMPLETED', 'INPROGRESS');
 
+-- CreateEnum
+CREATE TYPE "Category" AS ENUM ('DESIGN', 'MUSIC', 'PROGRAMMING', 'DIGITAL_MARKETING', 'VIDEO', 'WRITING', 'TRANSLATION', 'BUSINESS', 'CONSULTING', 'AI', 'GAMING', 'OTHER');
+
 -- CreateTable
 CREATE TABLE "User" (
     "user_id" TEXT NOT NULL,
@@ -12,7 +15,6 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
-    "discord_handle" TEXT,
     "role" "Role" NOT NULL DEFAULT 'FREELANCER',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("user_id")
@@ -52,9 +54,10 @@ CREATE TABLE "Freelancer" (
 -- CreateTable
 CREATE TABLE "Job" (
     "job_id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "description" TEXT NOT NULL,
-    "category" TEXT NOT NULL,
+    "category" "Category" NOT NULL,
     "client_address" TEXT NOT NULL,
     "freelancer_id" TEXT,
     "client_id" TEXT NOT NULL,

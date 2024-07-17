@@ -16,7 +16,6 @@ model User {
   email          String      @unique
   created_at     DateTime    @default(now())
   name           String
-  discord_handle String?
   role           Role        @default(FREELANCER)
   client         Client?
   freelancer     Freelancer?
@@ -53,9 +52,10 @@ model Freelancer {
 
 model Job {
   job_id        String      @id @default(uuid())
+  title         String 
   created_at    DateTime    @default(now())
   description   String
-  category      String
+  category      Category
   client_address String
   freelancer_id String?     @map("freelancer_id")
   client_id     String      @map("client_id")
@@ -79,3 +79,18 @@ enum Status {
   COMPLETED
   INPROGRESS
 }
+
+enum Category {
+  DESIGN
+  MUSIC
+  PROGRAMMING
+  DIGITAL_MARKETING
+  VIDEO
+  WRITING
+  TRANSLATION
+  BUSINESS
+  CONSULTING
+  AI
+  GAMING 
+  OTHER 
+ }

@@ -1,6 +1,6 @@
 import { signIn } from "next-auth/react";
 import axios from 'axios';
-import { Role } from "@prisma/client"; // Adjust this import based on your Prisma generated types
+import { Role, Category } from "@prisma/client"; // Adjust this import based on your Prisma generated types
 
 
 type Data = {
@@ -34,9 +34,18 @@ type ClientData = {
 };
 
 type jobData = {
+  title: string;
   description: string;
-  category: string;
+  category: Category;
   user_id: string;
+  price: number;
+  client_address:string;
+}
+
+type jobUpdateData = {
+  title: string;
+  description: string;
+  category: Category;
   price: number;
 }
 
@@ -72,18 +81,12 @@ export const UserLogin = async (userDetails: Data) => {
   }
 };
 
-export const createJob = async (jobDetails: {
-  description: string;
-  category: string;
-  user_id: string;
-  price: number;
-  client_address:string;
-}) => {
+export const createJob = async (jobDetails: jobData) => {
   try {
-    const { description, category, user_id, price,client_address } = jobDetails;
+    const { title, description, category, user_id, price,client_address } = jobDetails;
     const res = await axios.post(
       '/api/job',
-      { description, category, user_id, price,client_address }, // Pass data directly
+      { title, description, category, user_id, price,client_address }, // Pass data directly
       { headers: { "Content-Type": "application/json" } } // Pass headers in the config object
     );
     return res;
@@ -106,13 +109,13 @@ export const getAllJobs = async () => {
   }
 }
 
-export const updateJob = async (jobDetails: jobData, job_id: string) => {
-  const { description, category, user_id, price } = jobDetails;
+export const updateJob = async (jobDetails: jobUpdateData, job_id: string, user_id: string) => {
+  const { title, description, category, price } = jobDetails;
   try {
     const res = await axios.put('/api/job',
       {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ job_id, user_id, description, category, price })
+        body: JSON.stringify({ job_id, user_id, title, description, category, price })
       }
     );
     return res;

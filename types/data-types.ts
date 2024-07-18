@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { Role, Category, Status, Client, Freelancer, JobFreelancer } from "@prisma/client";
 
 export interface FreelancerData {
     bio: string;
@@ -26,15 +26,19 @@ export type User = {
 
   export interface Jobs {
     job_id: string;
+    title: string;
     created_at: Date;
     description: string;
-    category: string;
+    category: Category;
     client_address: string;
     freelancer_id: string | null;
     client_id: string;
-    price: number;
+    price: number | null;
     f_rating: number | null;
     c_rating: number | null;
-    status: Role
+    status: Status;
+    client: Client;
+    freelancer: Freelancer | null;
+    freelancers: JobFreelancer[];
   }
   

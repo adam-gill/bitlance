@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Role, Category } from "@prisma/client"; // Adjust this import based on your Prisma generated types
 import { DataJobRequest } from "@/app/api/jobrequest/route";
 
-
 type Data = {
   username?: string;
   password: string;
@@ -178,6 +177,24 @@ export const clientDetails = async (user_id: string) => {
     return res.data; // Return the response data
   } catch (error) {
     console.error("Failed to fetch client details:", error);
+    throw error; // Re-throw the error to handle it elsewhere if needed
+  }
+};
+
+export const getUserJobs = async (user_id: string, isFreelancer: boolean) => {
+  try {
+    const res = await axios.get('/api/job/user', {
+      params: { user_id, isFreelancer },
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (res.data.success) {
+      return res.data.data || []; // Return the data array or an empty array if data is null/undefined
+    } else {
+      throw new Error("Failed to fetch user jobs: Response was not successful.");
+    }
+  } catch (error) {
+    console.error("Failed to fetch user jobs:", error);
     throw error; // Re-throw the error to handle it elsewhere if needed
   }
 };

@@ -19,6 +19,7 @@ model User {
   role           Role        @default(FREELANCER)
   client         Client?
   freelancer     Freelancer?
+  jobsFreelancers                 JobFreelancer[]
 }
 
 model Client {
@@ -49,7 +50,7 @@ model Freelancer {
   avg_rating           Float?
   user                 User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   jobs                 Job[]
-  jobsFreelancers                 JobFreelancer[]
+  
 }
 
 model Job {
@@ -78,7 +79,7 @@ model JobFreelancer {
   freelancer_address String
   
   job            Job         @relation(fields: [job_id], references: [job_id], onDelete: Cascade)
-  freelancer     Freelancer  @relation(fields: [freelancer_id], references: [f_id], onDelete: Cascade)
+  freelancer     User  @relation(fields: [freelancer_id], references: [user_id], onDelete: Cascade)
   client            Client      @relation(fields: [client_id], references: [c_id], onDelete: Cascade)
   
   @@unique([job_id, freelancer_id])

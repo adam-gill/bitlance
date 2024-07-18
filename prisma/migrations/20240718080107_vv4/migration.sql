@@ -111,7 +111,7 @@ ALTER TABLE "Job" ADD CONSTRAINT "Job_freelancer_id_fkey" FOREIGN KEY ("freelanc
 ALTER TABLE "JobFreelancer" ADD CONSTRAINT "JobFreelancer_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "Job"("job_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "JobFreelancer" ADD CONSTRAINT "JobFreelancer_freelancer_id_fkey" FOREIGN KEY ("freelancer_id") REFERENCES "Freelancer"("f_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "JobFreelancer" ADD CONSTRAINT "JobFreelancer_freelancer_id_fkey" FOREIGN KEY ("freelancer_id") REFERENCES "User"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "JobFreelancer" ADD CONSTRAINT "JobFreelancer_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "Client"("c_id") ON DELETE CASCADE ON UPDATE CASCADE;

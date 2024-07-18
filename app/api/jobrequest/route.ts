@@ -3,16 +3,16 @@ import { prisma } from "@/lib/prisma";
 
 export type DataJobRequest = {
   job_id: string;
-  freelancer_id: string;
+  freelancer_id: string | undefined;
   client_id: string;
   freelancer_address: string;
 };
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+     
 
-    const { job_id, freelancer_id, client_id, freelancer_address }: DataJobRequest = body;
+    const { job_id, freelancer_id, client_id, freelancer_address }: DataJobRequest = await request.json();
 
     // Validate the request data
     if (!job_id || !freelancer_id || !client_id || !freelancer_address) {

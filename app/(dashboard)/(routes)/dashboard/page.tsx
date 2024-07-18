@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useSession, signOut } from "next-auth/react";
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { freelancerDetails, clientDetails } from "@/config/apiconfig";
+import { freelancerDetails, clientDetails, getUserJobs } from "@/config/apiconfig";
 import { FreelancerData, ClientData } from '@/types/data-types';
+import { useRouter } from 'next/navigation';
 import { ConnectBtn } from '@/components/Connect';
-import { useRouter } from 'next/navigation'
-import axios from 'axios';
 import CreateJobModal from '@/components/ui/CreateJobModal';
 
 const Dashboard: React.FC = () => {
@@ -15,6 +14,7 @@ const Dashboard: React.FC = () => {
   const [isFreelancer, setIsFreelancer] = useState(true);
   const [freelancerData, setFreelancerData] = useState<FreelancerData | null>(null);
   const [clientData, setClientData] = useState<ClientData | null>(null);
+  const [userJobs, setUserJobs] = useState<any[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const router = useRouter();
@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const userId = session?.user.data.user_id;
-
+  
       if (userId) {
         try {
           if (isFreelancer) {
@@ -50,9 +50,18 @@ const Dashboard: React.FC = () => {
             setErrorMessage("An error occurred. Please try again.");
           }
         }
+  
+        try {
+          const jobs = await getUserJobs(userId, isFreelancer);
+          console.log(jobs);
+          setUserJobs(jobs);
+        } catch (error) {
+          console.error("Failed to fetch user jobs:", error);
+          setErrorMessage("Failed to fetch user jobs. Please try again.");
+        }
       }
     };
-
+  
     fetchData();
   }, [isFreelancer, session?.user.data.user_id]);
 
@@ -65,12 +74,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleBrowseJobs = () => {
-    console.log("Browsing jobs...");
-    router.replace('/job');
-  };
-
-  const handleCreateJob = () => {
-    setIsJobModalOpen(true);
+    router.replace("/job");
   };
 
   return (
@@ -128,11 +132,29 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="mt-8 flex justify-center">
           <Button
-            onClick={isFreelancer ? handleBrowseJobs : handleCreateJob}
+            onClick={isFreelancer ? handleBrowseJobs : () => setIsJobModalOpen(true)}
             className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-6 py-2"
           >
             {isFreelancer ? 'Browse Jobs' : 'Create Job'}
           </Button>
+        </div>
+        <div className="mt-8">
+          <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">My Jobs</h2>
+          {Array.isArray(userJobs) && userJobs.length === 0 ? (
+            <p className="text-center">No jobs found.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {userJobs.map((job, index) => (
+                <div key={index} className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
+                  <h3 className="text-xl font-semibold text-primaryBitlanceLightGreen mb-2">{job.title}</h3>
+                  <p className="mb-2"><span className="font-bold">Description:</span> {job.description}</p>
+                  <p className="mb-2"><span className="font-bold">Category:</span> {job.category}</p>
+                  <p className="mb-2"><span className="font-bold">Price:</span> ${job.price}</p>
+                  <p className="mb-2"><span className="font-bold">Client Address:</span> {job.client_address}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
       <footer className="bg-primaryBitlanceDark p-4 text-center shadow-t-lg">

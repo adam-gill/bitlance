@@ -153,6 +153,20 @@ export const getRequestsPerJob = async (job_id: string | undefined) => {
   }
 };
 
+//get all freelancer requests jobs
+
+export const getFreelancerRequestJobs = async (freelancer_id: string | undefined) => {
+  try {
+    const res = await axios.get(`/api/freelancerrequestjobs`, {
+      params: { freelancer_id },
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Something went wrong", error);
+  }
+};
+
 export const updateJob = async (jobDetails: jobUpdateData, job_id: string, user_id: string) => {
   const { title, description, category, price } = jobDetails;
   try {

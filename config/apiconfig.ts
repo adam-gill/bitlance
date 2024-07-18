@@ -1,6 +1,7 @@
 import { signIn } from "next-auth/react";
 import axios from 'axios';
 import { Role, Category } from "@prisma/client"; // Adjust this import based on your Prisma generated types
+import { DataJobRequest } from "@/app/api/jobrequest/route";
 
 
 type Data = {
@@ -87,6 +88,22 @@ export const createJob = async (jobDetails: jobData) => {
     const res = await axios.post(
       '/api/job',
       { title, description, category, user_id, price,client_address }, // Pass data directly
+      { headers: { "Content-Type": "application/json" } } // Pass headers in the config object
+    );
+    return res;
+  } catch (error) {
+    console.log("Something went wrong", error);
+    throw error; // Ensure to throw the error so it can be caught where `createJob` is called
+  }
+}
+
+//request for a job
+export const RequestAJob = async (jobDetails: DataJobRequest) => {
+  try {
+    const {freelancer_address,client_id,freelancer_id,job_id } = jobDetails;
+    const res = await axios.post(
+      '/api/jobrequest',
+      { freelancer_address,client_id,freelancer_id,job_id }, // Pass data directly
       { headers: { "Content-Type": "application/json" } } // Pass headers in the config object
     );
     return res;

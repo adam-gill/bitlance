@@ -5,23 +5,35 @@ import { Button } from '@/components/ui/button';
 import { getAllJobs } from '@/config/apiconfig'; // Import your getAllJobs function
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { RequestAJob } from '@/config/apiconfig';
+import { useAccount } from 'wagmi';
+import useContract from '@/modeContracts/useContract';
+import {ethers} from "ethers"
 
 // Define the structure of the job object
+
 interface Job {
-  id: string;
+  job_id: string;
   title: string;
   description: string;
   category: string;
+  client_address:string;
+  client_id:string;
   price: number;
   status: string;
+  created_at:string;
 }
 
 const JobsPage: React.FC = () => {
+  const {address} = useAccount()
   const { data: session } = useSession();
   const [jobs, setJobs] = useState<Job[]>([]); // Ensure jobs is always an array
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const {RequestJob} = useContract()
+ 
   const router = useRouter();
+
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -47,6 +59,34 @@ const JobsPage: React.FC = () => {
     await signOut({ redirect: true, callbackUrl: "/" });
   };
 
+  const handleRequestJob = async(client_id:string,job_id:string,client_address:string,price:number)=>{
+    try{
+      if (!address) {
+        setErrorMessage("Freelancer address is required.");
+        return;
+      }
+      if (!client_id && !job_id  &&  !client_address) {
+        setErrorMessage("Please Retry again");
+        return;
+      }
+      const res = await RequestAJob({freelancer_address:address as string,client_id:client_id,job_id:job_id,freelancer_id:session?.user.data.user_id})
+      if (res.status == 201) {
+        const tx = await RequestJob(address as string,client_address,ethers.parseEther(price.toString()))
+        console.log("the tx",tx);
+        
+      } else{
+        setErrorMessage("Failed to request job.");
+      }
+
+    }catch(err){
+      console.error(err);
+      setErrorMessage("An error occurred while requesting the job.");
+
+    }
+  }
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-primaryBitlanceDark text-white">
       <header className="bg-primaryBitlanceDark p-4 shadow-lg flex flex-col items-center space-y-4">
@@ -67,7 +107,7 @@ const JobsPage: React.FC = () => {
             {jobs && jobs.length > 0 ? (
               <ul className="w-full max-w-4xl space-y-4">
                 {jobs.map((job: Job) => (
-                  <li key={job.id} className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 mb-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen transition-transform transform hover:scale-105 hover:shadow-2xl">
+                  <li key={job.job_id} className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 mb-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen transition-transform transform hover:scale-105 hover:shadow-2xl">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-primaryBitlanceLightGreen mb-2">{job.title}</h3>
@@ -77,7 +117,7 @@ const JobsPage: React.FC = () => {
                         <p className="text-sm text-gray-300"><span className="font-bold">Status:</span> {job.status}</p>
                       </div>
                       <div className="mt-4 md:mt-0 md:ml-4">
-                        <Button className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-4 py-2">
+                        <Button onClick={()=>handleRequestJob(job.client_id,job.job_id,job.client_address as string,job.price)} className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-4 py-2">
                           Apply Now
                         </Button>
                       </div>

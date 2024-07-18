@@ -69,6 +69,17 @@ CREATE TABLE "Job" (
     CONSTRAINT "Job_pkey" PRIMARY KEY ("job_id")
 );
 
+-- CreateTable
+CREATE TABLE "JobFreelancer" (
+    "id" TEXT NOT NULL,
+    "job_id" TEXT NOT NULL,
+    "client_id" TEXT NOT NULL,
+    "freelancer_id" TEXT NOT NULL,
+    "freelancer_address" TEXT NOT NULL,
+
+    CONSTRAINT "JobFreelancer_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -81,6 +92,9 @@ CREATE UNIQUE INDEX "Client_user_id_key" ON "Client"("user_id");
 -- CreateIndex
 CREATE UNIQUE INDEX "Freelancer_user_id_key" ON "Freelancer"("user_id");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "JobFreelancer_job_id_freelancer_id_key" ON "JobFreelancer"("job_id", "freelancer_id");
+
 -- AddForeignKey
 ALTER TABLE "Client" ADD CONSTRAINT "Client_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -92,3 +106,12 @@ ALTER TABLE "Job" ADD CONSTRAINT "Job_client_id_fkey" FOREIGN KEY ("client_id") 
 
 -- AddForeignKey
 ALTER TABLE "Job" ADD CONSTRAINT "Job_freelancer_id_fkey" FOREIGN KEY ("freelancer_id") REFERENCES "Freelancer"("f_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JobFreelancer" ADD CONSTRAINT "JobFreelancer_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "Job"("job_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JobFreelancer" ADD CONSTRAINT "JobFreelancer_freelancer_id_fkey" FOREIGN KEY ("freelancer_id") REFERENCES "User"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JobFreelancer" ADD CONSTRAINT "JobFreelancer_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "Client"("c_id") ON DELETE CASCADE ON UPDATE CASCADE;

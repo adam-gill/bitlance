@@ -1,0 +1,92 @@
+"use client"
+// app/(job)/routes/requests/[id]/page.tsx
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation'; // Use useParams instead of useRouter
+import { getRequestsPerJob } from '@/config/apiconfig'; // Import your getRequestsPerJob function
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+
+interface JobRequest {
+  request_id: string;
+  freelancer_id: string;
+  job_id: string;
+  status: string;
+  created_at: string;
+}
+
+const JobRequestsPage: React.FC = () => {
+  const { id } = useParams(); // Get the job ID from the URL using useParams
+  const { data: session } = useSession();
+  const [requests, setRequests] = useState<JobRequest[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      if (id) {
+        try {
+          const res = await getRequestsPerJob(id as string);
+          if (res?.data && Array.isArray(res.data)) {
+            setRequests(res.data);
+          } else {
+            setErrorMessage("Failed to fetch job requests.");
+          }
+        } catch (error) {
+          console.error("Failed to fetch job requests:", error);
+          setErrorMessage("An error occurred. Please try again.");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchRequests();
+  }, [id]);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-primaryBitlanceDark text-white">
+      <header className="bg-primaryBitlanceDark p-4 shadow-lg flex justify-between items-center">
+        <Button 
+          onClick={() => router.replace("/dashboard")} 
+          className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-6 py-2"
+        >
+          Return to Dashboard
+        </Button>
+      </header>
+      <main className="flex-grow p-8">
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <p className="text-lg text-primaryBitlanceLightGreen">Loading requests...</p>
+          </div>
+        ) : (
+          <div className="mt-8 flex flex-col items-center">
+            {requests.length > 0 ? (
+              <ul className="w-full max-w-4xl space-y-4">
+                {requests.map((request) => (
+                  <li key={request.request_id} className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 mb-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
+                    <div className="flex flex-col">
+                      <h3 className="text-lg font-semibold text-primaryBitlanceLightGreen mb-2">Request ID: {request.request_id}</h3>
+                      <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Freelancer ID:</span> {request.freelancer_id}</p>
+                      <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Job ID:</span> {request.job_id}</p>
+                      <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Status:</span> {request.status}</p>
+                      <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.created_at).toLocaleDateString()}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-center text-lg text-primaryBitlanceLightGreen">No requests available for this job.</p>
+            )}
+            {errorMessage && (
+              <p className="text-center text-lg text-red-500">{errorMessage}</p>
+            )}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default JobRequestsPage;

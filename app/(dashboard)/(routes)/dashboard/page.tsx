@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from 'react';
 import { useSession, signOut } from "next-auth/react";
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { ConnectBtn } from '@/components/Connect';
 import CreateJobModal from '@/components/ui/CreateJobModal';
 import { Category, Status } from '@prisma/client';
+import Link from 'next/link';
 
 interface JobFreelancer {
   id: string;
@@ -47,7 +49,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const userId = session?.user.data.user_id;
-  
+
       if (userId) {
         try {
           if (isFreelancer) {
@@ -75,10 +77,10 @@ const Dashboard: React.FC = () => {
             setErrorMessage("An error occurred. Please try again.");
           }
         }
-  
+
         try {
           const jobs = await getUserJobs(userId, isFreelancer);
-          console.log("freelancer",jobs);
+          console.log("User Jobs:", jobs);
           setUserJobs(jobs);
         } catch (error) {
           console.error("Failed to fetch user jobs:", error);
@@ -86,7 +88,7 @@ const Dashboard: React.FC = () => {
         }
       }
     };
-  
+
     fetchData();
   }, [isFreelancer, session?.user.data.user_id]);
 
@@ -116,8 +118,8 @@ const Dashboard: React.FC = () => {
           <span className="text-primaryBitlanceLightGreen">Freelancer</span>
         </div>
       </header>
-      <main className="flex-grow p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <main className="flex-grow p-8 overflow-y-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <section className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
             <h2 className="text-xl md:text-2xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">User Information</h2>
             <p className="mb-2"><span className="font-bold">Username:</span> {session?.user.data.username}</p>
@@ -137,7 +139,6 @@ const Dashboard: React.FC = () => {
                     <p className="mb-2"><span className="font-bold">Skills:</span> {freelancerData.skills}</p>
                     <p className="mb-2"><span className="font-bold">Portfolio Link:</span> {freelancerData.portfolio_link}</p>
                     <p className="mb-2"><span className="font-bold">Social Link:</span> {freelancerData.social_link}</p>
-                    
                   </div>
                 ) : (
                   <p>Loading freelancer data...</p>
@@ -148,7 +149,6 @@ const Dashboard: React.FC = () => {
                     <p className="mb-2"><span className="font-bold">Company Name:</span> {clientData.company_name}</p>
                     <p className="mb-2"><span className="font-bold">Company Description:</span> {clientData.company_description}</p>
                     <p className="mb-2"><span className="font-bold">Website Link:</span> {clientData.websiteLink}</p>
-                   
                   </div>
                 ) : (
                   <p>Loading client data...</p>
@@ -156,61 +156,39 @@ const Dashboard: React.FC = () => {
               )
             )}
           </section>
-        </div>
-        <div className="mt-8 flex justify-center">
-          <Button
-            onClick={isFreelancer ? handleBrowseJobs : () => setIsJobModalOpen(true)}
-            className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-6 py-2"
-          >
-            {isFreelancer ? 'Browse Jobs' : 'Create Job'}
-          </Button>
-        </div>
-        <div className="mt-8">
-          <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">My Jobs</h2>
-          {Array.isArray(userJobs) && userJobs.length === 0 ? (
-            <p className="text-center">No jobs found.</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              {isFreelancer && <div>
-                {userJobs.map((job:JobFreelancer, index) => (
-
-<div key={index} className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
-  <h3 className="text-xl font-semibold text-primaryBitlanceLightGreen mb-2">{job.job.title}</h3>
-  <p className="mb-2"><span className="font-bold">Description:</span> {job.job.description}</p>
-  <p className="mb-2"><span className="font-bold">Category:</span> {job.job.category}</p>
-  <p className="mb-2"><span className="font-bold">Price:</span> ${job.job.price}</p>
-  <p className="mb-2"><span className="font-bold">Client Add:</span> {job.job.client_address}</p>
-</div>
-))}
-{!isFreelancer && <div>
-  {userJobs.map((job, index) => (
-
-<div key={index} className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
-  <h3 className="text-xl font-semibold text-primaryBitlanceLightGreen mb-2">{job.title}</h3>
-  <p className="mb-2"><span className="font-bold">Description:</span> {job.description}</p>
-  <p className="mb-2"><span className="font-bold">Category:</span> {job.category}</p>
-  <p className="mb-2"><span className="font-bold">Price:</span> ${job.price}</p>
-  <p className="mb-2"><span className="font-bold">Client Add:</span> {job.client_address}</p>
-</div>
-))}
-  
-  </div>}
-                
-                </div>}
-              
-              
-              
-            </div>
-          )}
+          <div className="mt-8 flex justify-center">
+            <Button
+              onClick={isFreelancer ? handleBrowseJobs : () => setIsJobModalOpen(true)}
+              className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-6 py-2"
+            >
+              {isFreelancer ? 'Browse Jobs' : 'Create Job'}
+            </Button>
+          </div>
+          <div className="mb-8">
+            <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">My Jobs</h2>
+            {Array.isArray(userJobs) && userJobs.length === 0 ? (
+              <p className="text-center">No jobs found.</p>
+            ) : (
+              <div className="flex flex-col items-center">
+                <div className="max-h-[200px] overflow-y-auto w-full">
+                  {userJobs.map((job: any, index: number) => (
+                    <Link key={index} href={`/requests/${job.job_id}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
+                      <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">{job.title}</h3>
+                      <p className="text-center">{job.description}</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </main>
-      <footer className="bg-primaryBitlanceDark p-4 text-center shadow-t-lg">
+      <footer className="bg-primaryBitlanceDark p-4 text-center">
         <Button onClick={handleSignOut} className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-6 py-2">
           Sign Out
         </Button>
       </footer>
-      <CreateJobModal user_id={session?.user.data.user_id || ""} clientId={clientData?.c_id || ""} isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
+      {isJobModalOpen && <CreateJobModal user_id={session?.user.data.user_id || ""} clientId={clientData?.c_id || ""} isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />}
     </div>
   );
 };

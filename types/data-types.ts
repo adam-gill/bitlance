@@ -11,6 +11,7 @@ export interface ClientData {
     company_name: string;
     company_description: string;
     websiteLink: string;
+    c_id?:string;
 }
 
 export type User = {
@@ -30,6 +31,7 @@ export type User = {
     created_at: Date;
     description: string;
     category: Category;
+    u_id:string;
     client_address: string;
     freelancer_id: string | null;
     client_id: string;

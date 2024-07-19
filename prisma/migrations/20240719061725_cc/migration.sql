@@ -64,7 +64,7 @@ CREATE TABLE "Job" (
     "price" DOUBLE PRECISION,
     "f_rating" DOUBLE PRECISION,
     "c_rating" DOUBLE PRECISION,
-    "user_id" TEXT NOT NULL,
+    "u_id" TEXT NOT NULL,
     "status" "Status" NOT NULL,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("job_id")
@@ -109,7 +109,7 @@ ALTER TABLE "Job" ADD CONSTRAINT "Job_client_id_fkey" FOREIGN KEY ("client_id") 
 ALTER TABLE "Job" ADD CONSTRAINT "Job_freelancer_id_fkey" FOREIGN KEY ("freelancer_id") REFERENCES "Freelancer"("f_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Job" ADD CONSTRAINT "Job_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Job" ADD CONSTRAINT "Job_u_id_fkey" FOREIGN KEY ("u_id") REFERENCES "User"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "JobFreelancer" ADD CONSTRAINT "JobFreelancer_job_id_fkey" FOREIGN KEY ("job_id") REFERENCES "Job"("job_id") ON DELETE CASCADE ON UPDATE CASCADE;

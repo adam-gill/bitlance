@@ -29,6 +29,7 @@ type FreelancerData = {
 type ClientData = {
   user_id: string;
   company_name: string;
+  
   company_description: string | null;
   websiteLink: string | null; // Include websiteLink in ClientData
 };
@@ -39,6 +40,7 @@ type jobData = {
   category: Category;
   user_id: string;
   price: number;
+  client_id:string;
   client_address:string;
 }
 
@@ -83,10 +85,10 @@ export const UserLogin = async (userDetails: Data) => {
 
 export const createJob = async (jobDetails: jobData) => {
   try {
-    const { title, description, category, user_id, price,client_address } = jobDetails;
+    const { title, description, category, user_id, price,client_address,client_id } = jobDetails;
     const res = await axios.post(
       '/api/job',
-      { title, description, category, user_id, price,client_address }, // Pass data directly
+      { title, description, category, user_id, price,client_address,client_id }, // Pass data directly
       { headers: { "Content-Type": "application/json" } } // Pass headers in the config object
     );
     return res;

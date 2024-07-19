@@ -16,19 +16,19 @@ export async function GET(request: NextRequest) {
     let jobs;
 
     if (isFreelancer) {
-      const freelancer = await prisma.freelancer.findUnique({
-        where: { user_id },
-        include: { jobs: true },
+      const freelancer = await prisma.jobFreelancer.findMany({
+        where: { freelancer_id:user_id },
+        include: { job: true },
       });
 
       if (!freelancer) {
         return NextResponse.json({ success: false, message: "Freelancer not found" }, { status: 404 });
       }
 
-      jobs = freelancer.jobs;
+      jobs = freelancer;
     } else {
       const client = await prisma.client.findUnique({
-        where: { user_id },
+        where: {  user_id },
         include: { jobs: true },
       });
 

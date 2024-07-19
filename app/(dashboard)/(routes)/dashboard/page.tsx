@@ -8,6 +8,31 @@ import { FreelancerData, ClientData } from '@/types/data-types';
 import { useRouter } from 'next/navigation';
 import { ConnectBtn } from '@/components/Connect';
 import CreateJobModal from '@/components/ui/CreateJobModal';
+import { Category, Status } from '@prisma/client';
+
+interface JobFreelancer {
+  id: string;
+  job_id: string;
+  client_id: string;
+  freelancer_id: string;
+  freelancer_address: string;
+  
+  job: {
+    job_id: string;
+    title: string;
+    created_at: Date;
+    description: string;
+    category: Category;
+    client_address: string;
+    freelancer_id: string | null;
+    client_id: string;
+    price: number | null;
+    f_rating: number | null;
+    c_rating: number | null;
+    u_id: string;
+    status: Status;
+  };
+}
 
 const Dashboard: React.FC = () => {
   const { data: session } = useSession();
@@ -53,7 +78,7 @@ const Dashboard: React.FC = () => {
   
         try {
           const jobs = await getUserJobs(userId, isFreelancer);
-          console.log(jobs);
+          console.log("freelancer",jobs);
           setUserJobs(jobs);
         } catch (error) {
           console.error("Failed to fetch user jobs:", error);
@@ -112,6 +137,7 @@ const Dashboard: React.FC = () => {
                     <p className="mb-2"><span className="font-bold">Skills:</span> {freelancerData.skills}</p>
                     <p className="mb-2"><span className="font-bold">Portfolio Link:</span> {freelancerData.portfolio_link}</p>
                     <p className="mb-2"><span className="font-bold">Social Link:</span> {freelancerData.social_link}</p>
+                    
                   </div>
                 ) : (
                   <p>Loading freelancer data...</p>
@@ -122,6 +148,7 @@ const Dashboard: React.FC = () => {
                     <p className="mb-2"><span className="font-bold">Company Name:</span> {clientData.company_name}</p>
                     <p className="mb-2"><span className="font-bold">Company Description:</span> {clientData.company_description}</p>
                     <p className="mb-2"><span className="font-bold">Website Link:</span> {clientData.websiteLink}</p>
+                   
                   </div>
                 ) : (
                   <p>Loading client data...</p>
@@ -144,15 +171,36 @@ const Dashboard: React.FC = () => {
             <p className="text-center">No jobs found.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {userJobs.map((job, index) => (
-                <div key={index} className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
-                  <h3 className="text-xl font-semibold text-primaryBitlanceLightGreen mb-2">{job.title}</h3>
-                  <p className="mb-2"><span className="font-bold">Description:</span> {job.description}</p>
-                  <p className="mb-2"><span className="font-bold">Category:</span> {job.category}</p>
-                  <p className="mb-2"><span className="font-bold">Price:</span> ${job.price}</p>
-                  <p className="mb-2"><span className="font-bold">Client Address:</span> {job.client_address}</p>
-                </div>
-              ))}
+
+              {isFreelancer && <div>
+                {userJobs.map((job:JobFreelancer, index) => (
+
+<div key={index} className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
+  <h3 className="text-xl font-semibold text-primaryBitlanceLightGreen mb-2">{job.job.title}</h3>
+  <p className="mb-2"><span className="font-bold">Description:</span> {job.job.description}</p>
+  <p className="mb-2"><span className="font-bold">Category:</span> {job.job.category}</p>
+  <p className="mb-2"><span className="font-bold">Price:</span> ${job.job.price}</p>
+  <p className="mb-2"><span className="font-bold">Client Add:</span> {job.job.client_address}</p>
+</div>
+))}
+{!isFreelancer && <div>
+  {userJobs.map((job, index) => (
+
+<div key={index} className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
+  <h3 className="text-xl font-semibold text-primaryBitlanceLightGreen mb-2">{job.title}</h3>
+  <p className="mb-2"><span className="font-bold">Description:</span> {job.description}</p>
+  <p className="mb-2"><span className="font-bold">Category:</span> {job.category}</p>
+  <p className="mb-2"><span className="font-bold">Price:</span> ${job.price}</p>
+  <p className="mb-2"><span className="font-bold">Client Add:</span> {job.client_address}</p>
+</div>
+))}
+  
+  </div>}
+                
+                </div>}
+              
+              
+              
             </div>
           )}
         </div>
@@ -162,7 +210,7 @@ const Dashboard: React.FC = () => {
           Sign Out
         </Button>
       </footer>
-      <CreateJobModal clientId={session?.user.data.user_id || ""} isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
+      <CreateJobModal user_id={session?.user.data.user_id || ""} clientId={clientData?.c_id || ""} isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
     </div>
   );
 };

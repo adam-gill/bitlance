@@ -11,11 +11,12 @@ interface JobData {
   description: string;
   category: Category;
   user_id: string;
+  client_id:string;
   price: number;
   client_address: string;
 }
 
-const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: string }> = ({ isOpen, onClose, clientId }) => {
+const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: string,user_id:string }> = ({ isOpen, onClose, clientId ,user_id }) => {
   const { address } = useAccount();
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<Category>(Category.DESIGN); // Default value
@@ -30,7 +31,8 @@ const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: strin
       title,
       description,
       category,
-      user_id: clientId,
+      user_id: user_id,
+      client_id:clientId,
       price: parseFloat(price),
       client_address: address as string
     };

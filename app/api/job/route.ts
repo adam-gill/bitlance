@@ -14,13 +14,16 @@ export async function POST(request: NextRequest) {
         const payload = await request.json();
         console.log("Payload Received:", payload); // Log the entire payload
 
-        const { title, description, category, user_id, price,client_address } = payload;
+        const { title, description, category, user_id, price,client_address,client_id } = payload;
         if (!user_id) {
             return NextResponse.json({ success: false, message: "Missing user_id" }, { status: 400 });
         }
 
         if (!client_address) {
             return NextResponse.json({ success: false, message: "Missing Wallet Address" }, { status: 400 });
+        }
+        if (!client_id) {
+            return NextResponse.json({ success: false, message: "client_id missing" }, { status: 400 });
         }
 
         // Fetch the client using the user_id
@@ -32,7 +35,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, message: "Client not found" }, { status: 404 });
         }
 
-        const client_id = client.c_id;
+        
 
         // Check if `price` is a valid number
         const parsedPrice = parseFloat(price);
@@ -49,10 +52,18 @@ export async function POST(request: NextRequest) {
                 description,
                 category,
                 price: parsedPrice,
-                client_id,
-                client_address:client_address,
-                status: Status.OPEN, // Ensure Status.OPEN is a valid value
-            } as any,
+                           
+                client_address,
+                status: Status.OPEN,
+                client: {
+                    connect: { c_id: client_id },
+                },
+                user: {
+                    connect: {user_id },
+                },
+                
+               
+            } as any
         });
 
         return NextResponse.json({ success: true, job }, { status: 201 });

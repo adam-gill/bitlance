@@ -66,11 +66,11 @@ model Job {
   price         Float?
   f_rating      Float?
   c_rating      Float?
-  user_id       String
+  u_id     String
   status        Status
   client        Client      @relation(fields: [client_id], references: [c_id], onDelete: Cascade)
   freelancer    Freelancer? @relation(fields: [freelancer_id], references: [f_id], onDelete: Cascade)
-   user                 User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+   user                 User ?    @relation(fields: [u_id], references: [user_id], onDelete: Cascade)
 
   freelancers   JobFreelancer[]
 }

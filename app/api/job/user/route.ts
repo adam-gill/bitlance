@@ -27,14 +27,15 @@ export async function GET(request: NextRequest) {
 
       jobs = freelancer;
     } else {
-      const client = await prisma.client.findUnique({
-        where: {  user_id },
+      const client = await prisma.client.findFirst({
+        where: { user: { user_id } }, // Query by the user relation
         include: { jobs: true },
       });
 
       if (!client) {
         return NextResponse.json({ success: false, message: "Client not found" }, { status: 404 });
       }
+      console.log(client);
 
       jobs = client.jobs;
     }

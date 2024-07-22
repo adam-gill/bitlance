@@ -170,14 +170,21 @@ const Dashboard: React.FC = () => {
               <p className="text-center">No jobs found.</p>
             ) : (
               <div className="flex flex-col items-center">
-                <div className="max-h-[200px] overflow-y-auto w-full">
+                {isFreelancer?<div className="max-h-[200px] overflow-y-auto w-full">
+                  {userJobs.map((job: JobFreelancer, index: number) => (
+                    <Link key={index} href={`/requests/${job.job_id}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
+                      <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">{job.job.title}</h3>
+                      <p className="text-center">{job.job.description}</p>
+                    </Link>
+                  ))}
+                </div>:<div className="max-h-[200px] overflow-y-auto w-full">
                   {userJobs.map((job: any, index: number) => (
                     <Link key={index} href={`/requests/${job.job_id}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
                       <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">{job.title}</h3>
                       <p className="text-center">{job.description}</p>
                     </Link>
                   ))}
-                </div>
+                </div>}
               </div>
             )}
           </div>

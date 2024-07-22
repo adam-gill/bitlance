@@ -4,6 +4,7 @@ import React from "react";
 import { useWriteContract,useReadContract } from "wagmi";
 import BITLANCEABI from "../abi/bitlance.json"
 import { BITLANCECONTRACT } from "@/constant/contracts";
+import { CHAINLINKERC20 } from "@/constant/contracts";
 
 
 

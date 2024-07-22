@@ -21,9 +21,23 @@ const JobRequestsPage: React.FC = () => {
   const { id } = useParams(); // Get the job ID from the URL using useParams
   const { data: session } = useSession();
   const [requests, setRequests] = useState<JobFreelancer[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null >(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const handleSelectFreelancer = async(client_id:string, job_id:string)=>{
+    try{
+      const res = await updateJobStatusToInProgress(client_id,job_id)
+      if(res.status === 200){
+
+      }
+
+
+
+    }catch(err){
+     console.log("error",err)
+    }
+  }
 
   useEffect(() => {
     const fetchRequests = async () => {

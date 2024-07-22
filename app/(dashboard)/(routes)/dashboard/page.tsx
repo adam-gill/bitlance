@@ -12,7 +12,7 @@ import CreateJobModal from '@/components/ui/CreateJobModal';
 import { Category, Status } from '@prisma/client';
 import Link from 'next/link';
 
-interface JobFreelancer {
+export interface JobFreelancer {
   id: string;
   job_id: string;
   client_id: string;

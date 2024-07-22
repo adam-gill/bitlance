@@ -6,6 +6,7 @@ import { getRequestsPerJob } from '@/config/apiconfig'; // Import your getReques
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { JobFreelancer } from '@/app/(dashboard)/(routes)/dashboard/page';
 
 interface JobRequest {
   request_id: string;
@@ -18,7 +19,7 @@ interface JobRequest {
 const JobRequestsPage: React.FC = () => {
   const { id } = useParams(); // Get the job ID from the URL using useParams
   const { data: session } = useSession();
-  const [requests, setRequests] = useState<JobRequest[]>([]);
+  const [requests, setRequests] = useState<JobFreelancer[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -28,8 +29,9 @@ const JobRequestsPage: React.FC = () => {
       if (id) {
         try {
           const res = await getRequestsPerJob(id as string);
-          if (res?.data && Array.isArray(res.data)) {
-            setRequests(res.data);
+          console.log("the res is ressing",res.jobFreelancers)
+          if (res?.jobFreelancers && Array.isArray(res.jobFreelancers)) {
+            setRequests(res.jobFreelancers);
           } else {
             setErrorMessage("Failed to fetch job requests.");
           }
@@ -65,13 +67,13 @@ const JobRequestsPage: React.FC = () => {
             {requests.length > 0 ? (
               <ul className="w-full max-w-4xl space-y-4">
                 {requests.map((request) => (
-                  <li key={request.request_id} className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 mb-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
+                  <li key={request.id} className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 mb-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
                     <div className="flex flex-col">
-                      <h3 className="text-lg font-semibold text-primaryBitlanceLightGreen mb-2">Request ID: {request.request_id}</h3>
+                      <h3 className="text-lg font-semibold text-primaryBitlanceLightGreen mb-2">Request ID: {request.id}</h3>
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Freelancer ID:</span> {request.freelancer_id}</p>
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Job ID:</span> {request.job_id}</p>
-                      <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Status:</span> {request.status}</p>
-                      <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.created_at).toLocaleDateString()}</p>
+                      <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Status:</span> {request.job.status}</p>
+                      <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
                     </div>
                   </li>
                 ))}

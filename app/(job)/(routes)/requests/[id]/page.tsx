@@ -74,7 +74,9 @@ const JobRequestsPage: React.FC = () => {
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Job ID:</span> {request.job_id}</p>
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Status:</span> {request.job.status}</p>
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
-                    </div>
+                      {session?.user.data.role != "FREELANCER" && 
+                      <div className='flex  justify-end items-end'><Button>Select</Button></div>
+                      }                    </div>
                   </li>
                 ))}
               </ul>

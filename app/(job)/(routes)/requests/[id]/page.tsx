@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { JobFreelancer } from '@/app/(dashboard)/(routes)/dashboard/page';
 import { updateJobStatusToInProgress } from '@/config/apiconfig';
+import useContract from '@/modeContracts/useContract';
+import { ethers } from 'ethers';
 
 interface JobRequest {
   request_id: string;
@@ -24,11 +26,21 @@ const JobRequestsPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null >(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { approveLink,InitJob } = useContract();
 
-  const handleSelectFreelancer = async(client_id:string, job_id:string)=>{
+  const handleSelectFreelancer = async(client_id:string, job_id:string,price:number, freelancerAddress:string)=>{
     try{
       const res = await updateJobStatusToInProgress(client_id,job_id)
       if(res.status === 200){
+        const app =  await approveLink(ethers.parseEther(price?.toString()))
+        if(app){
+          await new Promise(resolve => setTimeout(resolve, 5000))
+
+          const init = await InitJob(job_id,freelancerAddress)
+          console.log("init tx",init);
+
+
+        }
 
       }
 
@@ -90,7 +102,7 @@ const JobRequestsPage: React.FC = () => {
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Status:</span> {request.job.status}</p>
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
                       {session?.user.data.role != "FREELANCER" && 
-                      <div className='flex  justify-end items-end'><Button>Select</Button></div>
+                      <div className='flex  justify-end items-end'><Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address )}>Select</Button></div>
                       }                    </div>
                   </li>
                 ))}

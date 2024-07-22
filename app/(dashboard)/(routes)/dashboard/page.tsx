@@ -28,7 +28,7 @@ export interface JobFreelancer {
     client_address: string;
     freelancer_id: string | null;
     client_id: string;
-    price: number | null;
+    price: number ;
     f_rating: number | null;
     c_rating: number | null;
     u_id: string;

@@ -153,7 +153,19 @@ export const getRequestsPerJob = async (job_id: string | undefined) => {
     console.error("Something went wrong", error);
   }
 };
-
+//update job to inprogress
+export const updateJobStatusToInProgress = async (job_id: string,client_id:string) => {
+  try {
+    const res = await axios.patch('/api/clientjob', {
+      job_id, client_id
+    }, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Something went wrong", error);
+  }
+};
 //get all freelancer requests jobs
 
 export const getFreelancerRequestJobs = async (freelancer_id: string | undefined) => {

@@ -33,11 +33,19 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-      const { job_id } = await request.json();
+      const { job_id,client_id } = await request.json();
 
       if (!job_id) {
           return NextResponse.json({ success: false, message: "Missing job_id" }, { status: 400 });
       }
+
+      const client =  await prisma.client.findUnique({
+        where:{c_id:client_id}
+      })
+      if (!client) {
+        return NextResponse.json({ success: false, message: "Client not found" }, { status
+          : 404 });
+          }
 
       const job = await prisma.job.findUnique({ where: { job_id } });
 

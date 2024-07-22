@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { JobFreelancer } from '@/app/(dashboard)/(routes)/dashboard/page';
+import { updateJobStatusToInProgress } from '@/config/apiconfig';
 
 interface JobRequest {
   request_id: string;

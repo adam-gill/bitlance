@@ -4,11 +4,26 @@ import React from "react";
 import { useWriteContract,useReadContract } from "wagmi";
 import BITLANCEABI from "../abi/bitlance.json"
 import { BITLANCECONTRACT } from "@/constant/contracts";
+import { CHAINLINKERC20 } from "@/constant/contracts";
+import IERC20ABI from "../abi/IERC20.json"
 
 
 
 const useContract =()=>{
     const {writeContractAsync:bitlanceContract} = useWriteContract()
+    const {writeContractAsync:chainlinkERC20} = useWriteContract()
+    //approve function
+
+    const  approveLink = async(amount:bigint)=>{
+        const tx = await chainlinkERC20({
+            address:CHAINLINKERC20,
+            abi:IERC20ABI.abi,
+            functionName:"approve",
+            args:[BITLANCECONTRACT,amount]
+        })
+        return tx;
+
+    }
 
     //request job
     // string memory _jobid,address client,uint256 amount
@@ -26,12 +41,12 @@ const useContract =()=>{
     //initi job
     //string memory _jobid,address freelancer,address stabletoken
 
-    const InitJob = async(jobId:string,freelancerAddress:string,token:string)=>{
+    const InitJob = async(jobId:string,freelancerAddress:`0x${string}`)=>{
         const tx = await bitlanceContract({
             address:BITLANCECONTRACT,
             abi:BITLANCEABI.abi,
             functionName:"initializeJob",
-            args:[jobId,freelancerAddress,token]
+            args:[jobId,freelancerAddress,chainlinkERC20]
             })
             return tx
     }
@@ -101,7 +116,7 @@ const AddManager = async(address:string)=>{
 
 
 
-    return{AddManager,AddTokens,RaiseDispute,RequestJob,ReleasePayment,SolveDispute,InitJob}
+    return{AddManager,AddTokens,RaiseDispute,RequestJob,ReleasePayment,SolveDispute,InitJob,approveLink}
 }
 
 export default useContract;

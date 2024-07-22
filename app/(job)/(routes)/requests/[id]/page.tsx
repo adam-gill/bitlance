@@ -1,6 +1,6 @@
 "use client"
 // app/(job)/routes/requests/[id]/page.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation'; // Use useParams instead of useRouter
 import { getRequestsPerJob } from '@/config/apiconfig'; // Import your getRequestsPerJob function
 import { useSession } from 'next-auth/react';
@@ -28,29 +28,23 @@ const JobRequestsPage: React.FC = () => {
   const router = useRouter();
   const { approveLink,InitJob } = useContract();
 
-  const handleSelectFreelancer = async(client_id:string, job_id:string,price:number, freelancerAddress:string)=>{
-    try{
-      const res = await updateJobStatusToInProgress(client_id,job_id)
-      if(res.status === 200){
-        const app =  await approveLink(ethers.parseEther(price?.toString()))
-        if(app){
-          await new Promise(resolve => setTimeout(resolve, 5000))
-
-          const init = await InitJob(job_id,freelancerAddress)
-          console.log("init tx",init);
-
-
+  const handleSelectFreelancer =async (client_id: string, job_id: string, price: number, freelancerAddress: string) => {
+    try {
+      const res = await updateJobStatusToInProgress(job_id,session?.user.data.user_id);
+      if (res?.status ==200) {
+        //console.log("Response from updateJobStatusToInProgress:", res);
+        const app = await approveLink(ethers.parseEther(price.toString()));
+        if (app) {
+          await new Promise(resolve => setTimeout(resolve, 10000));
+          console.log("user address",freelancerAddress)
+          const init = await InitJob(job_id,freelancerAddress as `0x${string}`);
+          console.log("Init transaction:", init);
         }
-
       }
-
-
-
-    }catch(err){
-     console.log("error",err)
+    } catch (err) {
+      console.error("Error in handleSelectFreelancer:", err);
     }
-  }
-
+  };
   useEffect(() => {
     const fetchRequests = async () => {
       if (id) {

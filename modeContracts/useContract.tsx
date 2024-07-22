@@ -41,7 +41,7 @@ const useContract =()=>{
     //initi job
     //string memory _jobid,address freelancer,address stabletoken
 
-    const InitJob = async(jobId:string,freelancerAddress:string)=>{
+    const InitJob = async(jobId:string,freelancerAddress:`0x${string}`)=>{
         const tx = await bitlanceContract({
             address:BITLANCECONTRACT,
             abi:BITLANCEABI.abi,

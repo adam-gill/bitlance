@@ -99,6 +99,7 @@ export const createJob = async (jobDetails: jobData) => {
 }
 
 //request for a job
+
 export const RequestAJob = async (jobDetails: DataJobRequest) => {
   try {
     const {freelancer_address,client_id,freelancer_id,job_id } = jobDetails;
@@ -154,14 +155,16 @@ export const getRequestsPerJob = async (job_id: string | undefined) => {
   }
 };
 //update job to inprogress
-export const updateJobStatusToInProgress = async (job_id: string,client_id:string) => {
+export const updateJobStatusToInProgress = async (job_id: string,client_id:string | undefined) => {
   try {
-    const res = await axios.patch('/api/updatestatus', {
+    const res = await axios.patch('/api/clientjob/updatestatus', {
       job_id, client_id
     }, {
       headers: { "Content-Type": "application/json" },
     });
-    return res.data;
+    
+    
+    return res;
   } catch (error) {
     console.error("Something went wrong", error);
   }

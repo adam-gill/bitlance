@@ -15,8 +15,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     console.log("client_id:", client_id);
-    const client = await prisma.client.findUnique({
-      where: { c_id: client_id }
+    const client = await prisma.user.findUnique({
+      where: { user_id: client_id }
     });
     
     if (!client) {

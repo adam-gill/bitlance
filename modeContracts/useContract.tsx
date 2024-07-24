@@ -1,7 +1,7 @@
 import React from "react";
 
 
-import { useWriteContract,useReadContract } from "wagmi";
+import { useWriteContract,useReadContract,useSimulateContract } from "wagmi";
 import BITLANCEABI from "../abi/bitlance.json"
 import { BITLANCECONTRACT } from "@/constant/contracts";
 import { CHAINLINKERC20 } from "@/constant/contracts";
@@ -10,8 +10,9 @@ import IERC20ABI from "../abi/IERC20.json"
 
 
 const useContract =()=>{
-    const {writeContractAsync:bitlanceContract} = useWriteContract()
+    const {writeContractAsync:bitlanceContract,error} = useWriteContract()
     const {writeContractAsync:chainlinkERC20} = useWriteContract()
+    //const { } = useSimulateContract();
     //approve function
 
     const  approveLink = async(amount:bigint)=>{
@@ -46,8 +47,9 @@ const useContract =()=>{
             address:BITLANCECONTRACT,
             abi:BITLANCEABI.abi,
             functionName:"initializeJob",
-            args:[jobId,freelancerAddress,chainlinkERC20]
+            args:[jobId,freelancerAddress,CHAINLINKERC20]
             })
+            console.log("is error",error)
             return tx
     }
 

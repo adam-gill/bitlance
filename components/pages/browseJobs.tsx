@@ -71,7 +71,7 @@ const JobsPage: React.FC = () => {
       }
       const res = await RequestAJob({freelancer_address:address as string,client_id:client_id,job_id:job_id,freelancer_id:session?.user.data.user_id})
       if (res.status == 201) {
-        const tx = await RequestJob(address as string,client_address,ethers.parseEther(price.toString()))
+        const tx = await RequestJob(job_id,client_address,ethers.parseEther(price.toString()))
         console.log("the tx",tx);
         
       } else{
@@ -115,6 +115,7 @@ const JobsPage: React.FC = () => {
                         <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Category:</span> {job.category}</p>
                         <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Price:</span> ${job.price}</p>
                         <p className="text-sm text-gray-300"><span className="font-bold">Status:</span> {job.status}</p>
+                        <p className="text-sm text-gray-300"><span className="font-bold">JobID:</span> {job.job_id}</p>
                       </div>
                       <div className="mt-4 md:mt-0 md:ml-4">
                         <Button onClick={()=>handleRequestJob(job.client_id,job.job_id,job.client_address as string,job.price)} className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-4 py-2">

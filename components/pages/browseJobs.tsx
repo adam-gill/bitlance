@@ -9,6 +9,7 @@ import { RequestAJob } from '@/config/apiconfig';
 import { useAccount } from 'wagmi';
 import useContract from '@/modeContracts/useContract';
 import {ethers} from "ethers"
+import { Status } from '@prisma/client';
 
 // Define the structure of the job object
 
@@ -59,29 +60,40 @@ const JobsPage: React.FC = () => {
     await signOut({ redirect: true, callbackUrl: "/" });
   };
 
-  const handleRequestJob = async(client_id:string,job_id:string,client_address:string,price:number)=>{
+  const handleRequestJob = async(client_id:string,job_id:string,client_address:string,price:number, status:string)=>{
     try{
       if (!address) {
         setErrorMessage("Freelancer address is required.");
+        alert("Freelancer address is required")
         return;
       }
       if (!client_id && !job_id  &&  !client_address) {
         setErrorMessage("Please Retry again");
         return;
       }
+      if(status !== Status.OPEN){
+        alert("This job is not Open, You cannot apply!");
+        return;
+      }
       const res = await RequestAJob({freelancer_address:address as string,client_id:client_id,job_id:job_id,freelancer_id:session?.user.data.user_id})
+      if(res.status == 202){
+        alert(res.data.message);
+        return; // We will not proceed from here, as the user has already applied for the job!
+        }
       if (res.status == 201) {
         const tx = await RequestJob(job_id,client_address,ethers.parseEther(price.toString()))
         console.log("the tx",tx);
-        
-      } else{
+        alert("Transaction Successfull, Job Requested Successfully!");
+      } 
+      else{
+        alert("Failed to Request Job!")
         setErrorMessage("Failed to request job.");
       }
-
-    }catch(err){
+    }
+      catch(err){
       console.error(err);
+      alert("Failed to apply for the Job!");
       setErrorMessage("An error occurred while requesting the job.");
-
     }
   }
 
@@ -118,7 +130,7 @@ const JobsPage: React.FC = () => {
                         <p className="text-sm text-gray-300"><span className="font-bold">JobID:</span> {job.job_id}</p>
                       </div>
                       <div className="mt-4 md:mt-0 md:ml-4">
-                        <Button onClick={()=>handleRequestJob(job.client_id,job.job_id,job.client_address as string,job.price)} className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-4 py-2">
+                        <Button onClick={()=>handleRequestJob(job.client_id,job.job_id,job.client_address as string,job.price,job.status as string)} className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-4 py-2">
                           Apply Now
                         </Button>
                       </div>

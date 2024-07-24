@@ -18,17 +18,22 @@ export async function POST(request: NextRequest) {
     if (!job_id || !freelancer_id || !client_id || !freelancer_address) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
-
-    const jobFreelancer = await prisma.jobFreelancer.create({
-      data: {
-        job_id,
-        freelancer_id,
-        client_id,
-        freelancer_address,
-      },
-    });
-
-    return NextResponse.json({ success: true, jobFreelancer }, { status: 201 });
+    const job_application = await prisma.jobFreelancer.findFirst({ where : {AND:[{freelancer_id},{job_id}]}});
+    if(!job_application){
+      const jobFreelancer = await prisma.jobFreelancer.create({
+        data: {
+          job_id,
+          freelancer_id,
+          client_id,
+          freelancer_address,
+        },
+      });
+      console.log("HI", jobFreelancer);
+      return NextResponse.json({ success: true, jobFreelancer }, { status: 201 });
+    }
+    else{
+      return NextResponse.json({ success: true, message:"You have already applied for this job" }, { status: 202 });
+    }
   } catch (error) {
     console.error("Error creating JobFreelancer:", error);
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });

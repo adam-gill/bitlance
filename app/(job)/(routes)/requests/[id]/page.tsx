@@ -10,6 +10,10 @@ import { JobFreelancer } from '@/app/(dashboard)/(routes)/dashboard/page';
 import { updateJobStatusToInProgress } from '@/config/apiconfig';
 import useContract from '@/modeContracts/useContract';
 import { ethers } from 'ethers';
+import { useSimulateContract } from 'wagmi';
+import { BITLANCECONTRACT, CHAINLINKERC20 } from '@/constant/contracts';
+import BITLANCEABI from "../../../../../abi/bitlance.json"
+import InitTheJob from '@/modeContracts/simulates';
 
 interface JobRequest {
   request_id: string;
@@ -38,11 +42,12 @@ const JobRequestsPage: React.FC = () => {
           await new Promise(resolve => setTimeout(resolve, 10000));
           console.log("user address",freelancerAddress)
           const init = await InitJob(job_id,freelancerAddress as `0x${string}`);
+          
           console.log("Init transaction:", init);
         }
       }
-    } catch (err) {
-      console.error("Error in handleSelectFreelancer:", err);
+    } catch (error:any) {
+      console.error("Error in handleSelectFreelancer:", error.shortMessage!);
     }
   };
   useEffect(() => {
@@ -91,9 +96,10 @@ const JobRequestsPage: React.FC = () => {
                   <li key={request.id} className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 mb-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
                     <div className="flex flex-col">
                       <h3 className="text-lg font-semibold text-primaryBitlanceLightGreen mb-2">Request ID: {request.id}</h3>
-                      <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Freelancer ID:</span> {request.freelancer_id}</p>
+                      <p className="text-sm text-gray-300 mb-1"><span className="font-bold text-sm">Freelancer Address:</span> {request.freelancer_address}</p>
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Job ID:</span> {request.job_id}</p>
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Status:</span> {request.job.status}</p>
+                      
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
                       {session?.user.data.role != "FREELANCER" && 
                       <div className='flex  justify-end items-end'><Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address )}>Select</Button></div>

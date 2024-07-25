@@ -18,6 +18,10 @@ export async function POST(request: NextRequest) {
     if (!job_id || !freelancer_id || !client_id || !freelancer_address) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
+    const client = await prisma.client.findUnique({where:{c_id:client_id}});
+    if(client?.user_id == freelancer_id){ // Here freelancer_id is actually user_id
+      return NextResponse.json({ success: true, message:"You cannot apply to a job that was created by you" }, { status: 203 });
+    }
     const job_application = await prisma.jobFreelancer.findFirst({ where : {AND:[{freelancer_id},{job_id}]}});
     if(!job_application){
       const jobFreelancer = await prisma.jobFreelancer.create({

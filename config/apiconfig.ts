@@ -155,10 +155,10 @@ export const getRequestsPerJob = async (job_id: string | undefined) => {
   }
 };
 //update job to inprogress
-export const updateJobStatusToInProgress = async (job_id: string,client_id:string | undefined) => {
+export const updateJobStatusToInProgress = async (job_id: string,client_id:string | undefined, freelancer_id:string|undefined) => {
   try {
     const res = await axios.patch('/api/clientjob/updatestatus', {
-      job_id, client_id
+      job_id, client_id, freelancer_id
     }, {
       headers: { "Content-Type": "application/json" },
     });

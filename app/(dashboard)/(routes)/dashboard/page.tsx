@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { ConnectBtn } from '@/components/Connect';
 import CreateJobModal from '@/components/ui/CreateJobModal';
 import { Category, Status } from '@prisma/client';
+import BrowseJobs from "@/components/pages/browseJobs";
 import Link from 'next/link';
 
 export interface JobFreelancer {
@@ -45,6 +46,7 @@ const Dashboard: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState("My Jobs");
+  const [canSwitch, setCanSwitch] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,52 +55,42 @@ const Dashboard: React.FC = () => {
 
       if (userId) {
         try {
-          if (isFreelancer) {
-            const res = await freelancerDetails(userId);
-            if (res?.data) {
-              setFreelancerData(res.data);
-              setErrorMessage(null);
-            } else {
-              setErrorMessage("User doesn't have a freelancer profile.");
-            }
-          } else {
-            const res = await clientDetails(userId);
-            if (res?.data) {
-              setClientData(res.data);
-              setErrorMessage(null);
-            } else {
-              setErrorMessage("User doesn't have a client profile.");
-            }
-          }
-        } catch (error: any) {
-          if (error.response && error.response.status === 400) {
-            setErrorMessage(isFreelancer ? "User doesn't have a freelancer profile." : "User doesn't have a client profile.");
-          } else {
-            console.error("Failed to fetch data:", error);
-            setErrorMessage("An error occurred. Please try again.");
-          }
-        }
+          const freelancerRes = await freelancerDetails(userId);
+          const clientRes = await clientDetails(userId);
 
-        try {
-          const jobs = await getUserJobs(userId, isFreelancer);
-          console.log("User Jobs:", jobs);
+          if (freelancerRes?.data) {
+            setFreelancerData(freelancerRes.data);
+          }
+
+          if (clientRes?.data) {
+            setClientData(clientRes.data);
+          }
+
+          setCanSwitch(freelancerRes?.data && clientRes?.data);
+          setIsFreelancer(freelancerRes?.data ? true : false);
+
+          const jobs = await getUserJobs(userId, freelancerRes?.data ? true : false);
           setUserJobs(jobs);
-        } catch (error) {
-          console.error("Failed to fetch user jobs:", error);
-          setErrorMessage("Failed to fetch user jobs. Please try again.");
+          setErrorMessage(null);
+
+        } catch (error: any) {
+          console.error("Failed to fetch data:", error);
+          setErrorMessage("An error occurred. Please try again.");
         }
       }
     };
 
     fetchData();
-  }, [isFreelancer, session?.user.data.user_id]);
+  }, [session?.user.data.user_id]);
 
   const handleSignOut = async () => {
     await signOut({ redirect: true, callbackUrl: "/" });
   };
 
   const handleSwitchChange = (checked: boolean) => {
-    setIsFreelancer(checked);
+    if (canSwitch) {
+      setIsFreelancer(checked);
+    }
   };
 
   const handleTabChange = (tab: string) => {
@@ -115,7 +107,7 @@ const Dashboard: React.FC = () => {
 
         <div className="flex items-center space-x-4">
           <span className="text-primaryBitlanceLightGreen">Client</span>
-          <Switch checked={isFreelancer} onChange={handleSwitchChange} />
+          <Switch checked={isFreelancer} onChange={handleSwitchChange} disabled={!canSwitch} />
           <span className="text-primaryBitlanceLightGreen">Freelancer</span>
         </div>
       </header>
@@ -141,17 +133,11 @@ const Dashboard: React.FC = () => {
             )}
           </ul>
         </nav>
-        <main className="flex-grow p-8 overflow-y-auto">
+        <main className="flex-grow p-0">
           {selectedTab === "Browse Jobs" && (
-            <div>
-              <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">Browse Jobs</h2>
-              <div className="mt-8 flex justify-center">
-                <Button
-                  onClick={() => router.replace("/job")}
-                  className="border border-primaryBitlanceLightGreen bg-transparent text-primaryBitlanceLightGreen font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-6 py-2"
-                >
-                  Browse Jobs
-                </Button>
+            <div className="flex flex-col min-h-screen">
+              <div className="max-h-[80vh] overflow-y-auto w-full">
+                <BrowseJobs />
               </div>
             </div>
           )}
@@ -198,43 +184,37 @@ const Dashboard: React.FC = () => {
             </div>
           )}
           {selectedTab === "User Profile" && (
-            <div>
-              <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">User Profile</h2>
-              {errorMessage && <p className="text-center text-red-500">{errorMessage}</p>}
-              <section className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen">
-                {isFreelancer ? (
-                  freelancerData ? (
-                    <div className="text-center">
-                      <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4">Freelancer Profile</h2>
-                      <p className="text-lg mb-2">Bio: {freelancerData.bio}</p>
-                      <p className="text-lg mb-2">Skills: {freelancerData.skills}</p>
-                      <p className="text-lg mb-2">Portfolio: {freelancerData.portfolio_link}</p>
-                      <p className="text-lg mb-2">Social: {freelancerData.social_link}</p>
-                    </div>
-                  ) : (
-                    <p className="text-center">No freelancer profile found.</p>
-                  )
+            <div className="p-4">
+              <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-6 text-center">User Profile</h2>
+              {errorMessage && <p className="text-center text-red-500 mb-4">{errorMessage}</p>}
+              <div className="flex justify-center">
+                {isFreelancer && freelancerData ? (
+                  <div className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-6 w-full max-w-lg">
+                    <h3 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">Freelancer Profile</h3>
+                    <p className="text-lg mb-2"><strong>Bio:</strong> {freelancerData.bio}</p>
+                    <p className="text-lg mb-2"><strong>Skills:</strong> {freelancerData.skills}</p>
+                    <p className="text-lg mb-2"><strong>Portfolio:</strong> <a href={freelancerData.portfolio_link} className="text-primaryBitlanceLightGreen underline" target="_blank" rel="noopener noreferrer">{freelancerData.portfolio_link}</a></p>
+                    <p className="text-lg mb-2"><strong>Social:</strong> <a href={freelancerData.social_link} className="text-primaryBitlanceLightGreen underline" target="_blank" rel="noopener noreferrer">{freelancerData.social_link}</a></p>
+                  </div>
                 ) : (
-                  clientData ? (
-                    <div className="text-center">
-                      <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4">Client Profile</h2>
-                      <p className="text-lg mb-2">Name: {clientData.company_name}</p>
-                      <p className="text-lg mb-2">Description: {clientData.company_description}</p>
-                      <p className="text-lg mb-2">Website: {clientData.websiteLink}</p>
+                  clientData && (
+                    <div className="bg-primaryBitlanceDark p-6 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-6 w-full max-w-lg">
+                      <h3 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">Client Profile</h3>
+                      <p className="text-lg mb-2"><strong>Name:</strong> {clientData.company_name}</p>
+                      <p className="text-lg mb-2"><strong>Description:</strong> {clientData.company_description}</p>
+                      <p className="text-lg mb-2"><strong>Website:</strong> <a href={clientData.websiteLink} className="text-primaryBitlanceLightGreen underline" target="_blank" rel="noopener noreferrer">{clientData.websiteLink}</a></p>
                     </div>
-                  ) : (
-                    <p className="text-center">No client profile found.</p>
                   )
                 )}
-              </section>
+              </div>
             </div>
           )}
         </main>
       </div>
-      <footer className="bg-primaryBitlanceDark p-4 text-center shadow-lg border-t border-primaryBitlanceLightGreen">
-        <Button variant="outline" className="w-full border-primaryBitlanceLightGreen" onClick={handleSignOut}>Sign Out</Button>
+      <footer className="bg-primaryBitlanceDark p-4 shadow-lg">
+        <Button variant="outline" onClick={handleSignOut} className="text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen">Sign Out</Button>
       </footer>
-        <CreateJobModal user_id={session?.user.data.user_id || ""} clientId={clientData?.c_id || ""} isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
+      <CreateJobModal user_id={session?.user.data.user_id || ""} clientId={clientData?.c_id || ""} isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
     </div>
   );
 };

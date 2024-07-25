@@ -14,6 +14,7 @@ import { useSimulateContract } from 'wagmi';
 import { BITLANCECONTRACT, CHAINLINKERC20 } from '@/constant/contracts';
 import BITLANCEABI from "../../../../../abi/bitlance.json"
 import InitTheJob from '@/modeContracts/simulates';
+import { Status } from '@prisma/client';
 
 interface JobRequest {
   request_id: string;
@@ -32,9 +33,13 @@ const JobRequestsPage: React.FC = () => {
   const router = useRouter();
   const { approveLink,InitJob } = useContract();
 
-  const handleSelectFreelancer =async (client_id: string, job_id: string, price: number, freelancerAddress: string) => {
+  const handleSelectFreelancer =async (client_id: string, job_id: string, price: number, freelancerAddress: string, freelancer_id:string, job_status:Status) => {
     try {
-      const res = await updateJobStatusToInProgress(job_id,session?.user.data.user_id);
+      if(job_status!== Status.OPEN){
+        alert("You cannot select a freelancer for a Job thats not OPEN");
+        return;
+      }
+      const res = await updateJobStatusToInProgress(job_id,session?.user.data.user_id, freelancer_id);
       if (res?.status ==200) {
         //console.log("Response from updateJobStatusToInProgress:", res);
         const app = await approveLink(ethers.parseEther(price.toString()));
@@ -102,7 +107,7 @@ const JobRequestsPage: React.FC = () => {
                       
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
                       {session?.user.data.role != "FREELANCER" && 
-                      <div className='flex  justify-end items-end'><Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address )}>Select</Button></div>
+                      <div className='flex  justify-end items-end'><Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button></div>
                       }                    </div>
                   </li>
                 ))}

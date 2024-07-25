@@ -76,7 +76,7 @@ const JobsPage: React.FC = () => {
         return;
       }
       const res = await RequestAJob({freelancer_address:address as string,client_id:client_id,job_id:job_id,freelancer_id:session?.user.data.user_id})
-      if(res.status == 202){
+      if(res.status == 202 || res.status == 203){
         alert(res.data.message);
         return; // We will not proceed from here, as the user has already applied for the job!
         }

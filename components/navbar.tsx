@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Import icons for the hamburger menu
 import { useSession, signOut } from "next-auth/react";
+
 const Navbar = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +13,9 @@ const Navbar = () => {
   const handleSignOut = async () => {
     await signOut({ redirect: true, callbackUrl: "/" });
   };
+
   return (
-    <div className="w-full h-20 flex flex-col sm:flex-row justify-between items-center bg-primaryBitlanceDark text-primaryBitlanceGray border-b-2 border-gray-800 p-4 relative">
+    <div className="w-full h-20 flex flex-col sm:flex-row justify-between items-center bg-primaryBitlanceDark text-primaryBitlanceGray border-b-2 border-gray-800 py-4 px-[56px] relative">
       {/* Mobile menu button */}
       <div className="sm:hidden absolute right-4 top-4">
         <Button 
@@ -24,22 +26,52 @@ const Navbar = () => {
         </Button>
       </div>
 
-      {/* Centered container */}
-      <div className="flex flex-1 items-center justify-between sm:justify-center">
-        {/* Logo */}
-        <div
-          onClick={() => router.replace("/")}
-          className="text-3xl font-bold text-primaryBitlanceLightGreen mr-0 sm:mr-40 cursor-pointer hover:text-white transition duration-300 flex-shrink-0"
-        >
-          BITLANCE
-        </div>
-        
-        {/* Desktop menu */}
-        <div className={`flex flex-col sm:flex-row sm:items-center sm:space-x-4 ${isOpen ? "block" : "hidden"} sm:flex`}>
-          <div className="flex flex-col sm:flex-row sm:space-x-4 mt-4 sm:mt-0 ml-0 sm:ml-40">
-            {!session?.user.data && (
-              <>
-                <Button 
+      {/* Logo */}
+      <div
+        onClick={() => router.replace("/")}
+        className="text-3xl font-bold text-primaryBitlanceLightGreen cursor-pointer hover:text-white transition duration-300 flex-shrink-0"
+      >
+        BITLANCE
+      </div>
+
+      {/* Desktop menu */}
+      <div className={`hidden sm:flex items-center ml-auto space-x-4`}>
+        {!session?.user.data && (
+          <>
+            <Button 
+              onClick={() => router.replace("/login")} 
+              variant="link" 
+              className="text-primaryBitlanceGray hover:text-white transition duration-300"
+            >
+              Login
+            </Button>
+            <Button 
+              onClick={() => router.replace("/signup")} 
+              className="text-black hover:bg-white hover:text-black transition duration-300"
+            >
+              Sign Up
+            </Button>
+          </>
+        )}
+        {session?.user.data && (
+          <>
+            <Button 
+              variant="outline" 
+              onClick={handleSignOut} 
+              className="text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen"
+            >
+              Sign Out
+            </Button>
+          </>
+        )}
+      </div>
+
+      {/* Mobile menu */}
+      <div className={`sm:hidden ${isOpen ? "block" : "hidden"} absolute top-16 left-0 right-0 bg-primaryBitlanceDark p-4 px-10 border-t border-gray-800`}>
+        <div className="flex flex-col space-y-4 py-10">
+          {!session?.user.data && (
+            <>
+              <Button 
                 onClick={() => router.replace("/login")} 
                 variant="link" 
                 className="text-primaryBitlanceGray hover:text-white transition duration-300"
@@ -48,23 +80,27 @@ const Navbar = () => {
               </Button>
               <Button 
                 onClick={() => router.replace("/signup")} 
-                className="mt-2 sm:mt-0"
+                className="text-black hover:bg-white hover:text-black transition duration-300"
               >
                 Sign Up
               </Button>
-              </>
-            )}
-            {session?.user.data && (
-              <>
-                <Button variant="outline" onClick={handleSignOut} className="text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen">Sign Out</Button>
-              </>
-            )}
-            
-          </div>
+            </>
+          )}
+          {session?.user.data && (
+            <>
+              <Button 
+                variant="outline" 
+                onClick={handleSignOut} 
+                className="text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen"
+              >
+                Sign Out
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Navbar;

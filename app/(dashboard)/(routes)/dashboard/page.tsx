@@ -54,22 +54,26 @@ const Dashboard: React.FC = () => {
       const userId = session?.user.data.user_id;
       if (userId) {
         try {
-          if(session?.user.data.role === "FREELANCER" || session?.user.data.role === "BOTH"){
+          if(session?.user.data.role === "FREELANCER"){
             const freelancerRes = await freelancerDetails(userId);
             setFreelancerData(freelancerRes.data);
             setIsFreelancer(true);
             const jobs = await getUserJobs(userId, true);
             setUserJobs(jobs);
           }
-          if(session?.user.data.role === "CLIENT" || session?.user.data.role === "BOTH"){
+          if(session?.user.data.role === "CLIENT" ){
             const clientRes = await clientDetails(userId);
             setClientData(clientRes.data);
             setIsFreelancer(false);
+            const jobs = await getUserJobs(userId, false);
+            setUserJobs(jobs);
           }
           if(session?.user.data.role == "BOTH"){
             console.log("Entered Both");
             setCanSwitch(true);
-            setIsFreelancer(true);
+            //setIsFreelancer(true);
+            const jobs = await getUserJobs(userId, isFreelancer);
+            setUserJobs(jobs);
           }     
           setErrorMessage(null);
 
@@ -81,7 +85,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [session?.user.data.user_id]);
+  }, [session?.user.data.user_id,isFreelancer]);
 
 
   const handleSwitchChange = (checked: boolean) => {
@@ -152,10 +156,10 @@ const Dashboard: React.FC = () => {
                         {userJobs.map((job: JobFreelancer, index: number) => (
                           <Link key={index} href={`/requests/${job.job_id}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
                             <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
-                              {job.job.title ?? "Untitled Job"}
+                              {job.job?.title }
                             </h3>
                             <p className="text-center">
-                              {job.job.description ?? "No description available"}
+                              {job.job?.description}
                             </p>
                           </Link>
                         ))}

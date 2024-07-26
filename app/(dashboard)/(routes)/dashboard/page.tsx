@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { freelancerDetails, clientDetails, getUserJobs } from "@/config/apiconfig";
@@ -216,6 +216,3 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-export const handleSignOut = async () => {
-  await signOut({ redirect: true, callbackUrl: "/" });
-};

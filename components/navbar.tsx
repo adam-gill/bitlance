@@ -3,14 +3,15 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Import icons for the hamburger menu
-import { handleSignOut } from "@/app/(dashboard)/(routes)/dashboard/page";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 const Navbar = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const toggleMenu = () => setIsOpen(!isOpen);
-
+  const handleSignOut = async () => {
+    await signOut({ redirect: true, callbackUrl: "/" });
+  };
   return (
     <div className="w-full h-20 flex flex-col sm:flex-row justify-between items-center bg-primaryBitlanceDark text-primaryBitlanceGray border-b-2 border-gray-800 p-4 relative">
       {/* Mobile menu button */}

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { getRequestsPerJob } from '@/config/apiconfig';
+import { getRequestsPerJob, updateJobStatusToInProgress } from '@/config/apiconfig'; // Import necessary functions
 import { useSession, signOut } from "next-auth/react";
 
 interface JobRequest {
@@ -29,6 +29,7 @@ const JobRequestsPage: React.FC = () => {
   const [jobRequests, setJobRequests] = useState<JobRequest[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState<string | null>(null); // Add loading state for buttons
   const jobId = searchParams.get("job_id");
 
   useEffect(() => {
@@ -60,6 +61,49 @@ const JobRequestsPage: React.FC = () => {
     await signOut({ redirect: true, callbackUrl: "/" });
   };
 
+  const handleSelectFreelancer = async (requestId: string) => {
+    setButtonLoading(requestId);
+    try {
+      const selectedRequest = jobRequests.find(request => request.id === requestId);
+      const client_id = session?.user?.data?.user_id;
+      const freelancer_id = selectedRequest?.freelancer_id;
+      if (client_id && freelancer_id) {
+        const res = await updateJobStatusToInProgress(selectedRequest.job_id, client_id, freelancer_id);
+        if (res && res.data.success) {
+          alert("Freelancer selected successfully.");
+          // Optionally update jobRequests state here to reflect changes
+        } else {
+          setErrorMessage("Failed to select freelancer.");
+        }
+      } else {
+        setErrorMessage("Client ID or Freelancer ID is missing.");
+      }
+    } catch (error) {
+      console.error("Error selecting freelancer:", error);
+      setErrorMessage("An error occurred while selecting the freelancer.");
+    } finally {
+      setButtonLoading(null);
+    }
+  };
+
+  const handlePayoutFreelancer = async (requestId: string) => {
+    setButtonLoading(requestId);
+    try {
+      const res = await console.log("Insert payout here"); //payoutFreelancer(requestId);
+      if (true) { // Placeholder
+        alert("Payout successful.");
+        // Optionally update jobRequests state here to reflect changes
+      } else {
+        setErrorMessage("Failed to payout freelancer.");
+      }
+    } catch (error) {
+      console.error("Error paying out freelancer:", error);
+      setErrorMessage("An error occurred while paying out the freelancer.");
+    } finally {
+      setButtonLoading(null);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-primaryBitlanceDark text-white">
       <header className="bg-primaryBitlanceDark p-4 shadow-lg flex flex-col items-center space-y-4">
@@ -88,6 +132,19 @@ const JobRequestsPage: React.FC = () => {
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Price:</span> ${request.job.price}</p>
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Client Address:</span> {request.job.client_address}</p>
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Freelancer Address:</span> {request.freelancer_address}</p>
+                      <div className="mt-4">
+                        <Button
+                          onClick={() => request.job.status === "OPEN" ? handleSelectFreelancer(request.id) : handlePayoutFreelancer(request.id)}
+                          className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-4 py-2"
+                          disabled={buttonLoading === request.id}
+                        >
+                          {buttonLoading === request.id
+                            ? "Processing..."
+                            : request.job.status === "OPEN"
+                              ? "Select"
+                              : "Payout"}
+                        </Button>
+                      </div>
                     </div>
                   </li>
                 ))}

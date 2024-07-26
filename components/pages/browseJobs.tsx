@@ -36,7 +36,8 @@ const JobsPage: React.FC = () => {
       try {
         const res = await getAllJobs();
         if (res?.data && Array.isArray(res.data)) {
-          setJobs(res.data);
+          const openJobs = res.data.filter((job: Job) => job.status === "OPEN");
+          setJobs(openJobs);
         } else {
           setErrorMessage("Failed to fetch jobs.");
         }
@@ -66,7 +67,7 @@ const JobsPage: React.FC = () => {
         setErrorMessage("Please retry again.");
         return;
       }
-      if (status !== Status.OPEN) {
+      if (status !== "OPEN") {
         alert("This job is not open, you cannot apply!");
         return;
       }

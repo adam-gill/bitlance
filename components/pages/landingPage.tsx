@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import {
@@ -10,12 +11,19 @@ import {
 } from "@/components/ui/card";
 
 const LandingPage = () => {
+  const router = useRouter();
+
+  const handleExploreJobsClick = () => {
+    router.replace("/job");
+  };
+
   return (
     <div className="w-full h-screen bg-primaryBitlanceDark text-primaryBitlanceGray">
       <div className="flex flex-col gap-8 items-center w-full justify-center h-full px-4 md:px-0">
         <h1 className="text-3xl mt-12 pt-12 md:text-6xl font-bold text-white text-center">Find Your Dream Job Today!</h1>
         <span className="text-center text-sm md:text-base">Connecting Talent with Opportunity: Your Gateway to Career Success</span>
         <Button
+          onClick={handleExploreJobsClick}
           disabled={false}
           className="w-3/4 md:w-1/2 h-12 md:h-16 text-xl md:text-4xl bg-primaryBitlanceLightGreen text-black hover:bg-primaryBitlanceGreen hover:text-white transition duration-300 shadow-lg rounded-full"
         >

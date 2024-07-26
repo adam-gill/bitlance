@@ -3,13 +3,15 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Import icons for the hamburger menu
-
+import { useSession, signOut } from "next-auth/react";
 const Navbar = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-
+  const { data: session } = useSession();
   const toggleMenu = () => setIsOpen(!isOpen);
-
+  const handleSignOut = async () => {
+    await signOut({ redirect: true, callbackUrl: "/" });
+  };
   return (
     <div className="w-full h-20 flex flex-col sm:flex-row justify-between items-center bg-primaryBitlanceDark text-primaryBitlanceGray border-b-2 border-gray-800 p-4 relative">
       {/* Mobile menu button */}
@@ -35,19 +37,29 @@ const Navbar = () => {
         {/* Desktop menu */}
         <div className={`flex flex-col sm:flex-row sm:items-center sm:space-x-4 ${isOpen ? "block" : "hidden"} sm:flex`}>
           <div className="flex flex-col sm:flex-row sm:space-x-4 mt-4 sm:mt-0 ml-0 sm:ml-40">
-            <Button 
-              onClick={() => router.replace("/login")} 
-              variant="link" 
-              className="text-primaryBitlanceGray hover:text-white transition duration-300"
-            >
-              Login
-            </Button>
-            <Button 
-              onClick={() => router.replace("/signup")} 
-              className="mt-2 sm:mt-0"
-            >
-              Sign Up
-            </Button>
+            {!session?.user.data && (
+              <>
+                <Button 
+                onClick={() => router.replace("/login")} 
+                variant="link" 
+                className="text-primaryBitlanceGray hover:text-white transition duration-300"
+              >
+                Login
+              </Button>
+              <Button 
+                onClick={() => router.replace("/signup")} 
+                className="mt-2 sm:mt-0"
+              >
+                Sign Up
+              </Button>
+              </>
+            )}
+            {session?.user.data && (
+              <>
+                <Button variant="outline" onClick={handleSignOut} className="text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen">Sign Out</Button>
+              </>
+            )}
+            
           </div>
         </div>
       </div>

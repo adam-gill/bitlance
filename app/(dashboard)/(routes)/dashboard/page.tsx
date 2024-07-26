@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { freelancerDetails, clientDetails, getUserJobs } from "@/config/apiconfig";
@@ -52,25 +52,25 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const userId = session?.user.data.user_id;
-
       if (userId) {
         try {
-          const freelancerRes = await freelancerDetails(userId);
-          const clientRes = await clientDetails(userId);
-
-          if (freelancerRes?.data) {
+          if(session?.user.data.role === "FREELANCER" || session?.user.data.role === "BOTH"){
+            const freelancerRes = await freelancerDetails(userId);
             setFreelancerData(freelancerRes.data);
+            setIsFreelancer(true);
+            const jobs = await getUserJobs(userId, true);
+            setUserJobs(jobs);
           }
-
-          if (clientRes?.data) {
+          if(session?.user.data.role === "CLIENT" || session?.user.data.role === "BOTH"){
+            const clientRes = await clientDetails(userId);
             setClientData(clientRes.data);
+            setIsFreelancer(false);
           }
-
-          setCanSwitch(freelancerRes?.data && clientRes?.data);
-          setIsFreelancer(freelancerRes?.data ? true : false);
-
-          const jobs = await getUserJobs(userId, freelancerRes?.data ? true : false);
-          setUserJobs(jobs);
+          if(session?.user.data.role == "BOTH"){
+            console.log("Entered Both");
+            setCanSwitch(true);
+            setIsFreelancer(true);
+          }     
           setErrorMessage(null);
 
         } catch (error: any) {
@@ -83,9 +83,6 @@ const Dashboard: React.FC = () => {
     fetchData();
   }, [session?.user.data.user_id]);
 
-  const handleSignOut = async () => {
-    await signOut({ redirect: true, callbackUrl: "/" });
-  };
 
   const handleSwitchChange = (checked: boolean) => {
     if (canSwitch) {
@@ -114,9 +111,11 @@ const Dashboard: React.FC = () => {
       <div className="flex-grow flex">
         <nav className="bg-primaryBitlanceDark p-4 w-1/4 shadow-lg border-r border-primaryBitlanceLightGreen flex flex-col justify-evenly">
           <ul className="space-y-4">
-            <li>
-              <Button variant="outline" className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen" onClick={() => handleTabChange("Browse Jobs")}>Browse Jobs</Button>
-            </li>
+            {isFreelancer && (
+              <li>
+                <Button variant="outline" className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen" onClick={() => handleTabChange("Browse Jobs")}>Browse Jobs</Button>
+              </li>
+            )}
             <li>
               <Button variant="outline" className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen" onClick={() => handleTabChange("My Jobs")}>My Jobs</Button>
             </li>
@@ -211,9 +210,6 @@ const Dashboard: React.FC = () => {
           )}
         </main>
       </div>
-      <footer className="bg-primaryBitlanceDark p-4 shadow-lg">
-        <Button variant="outline" onClick={handleSignOut} className="text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen">Sign Out</Button>
-      </footer>
       <CreateJobModal user_id={session?.user.data.user_id || ""} clientId={clientData?.c_id || ""} isOpen={isJobModalOpen} onClose={() => setIsJobModalOpen(false)} />
     </div>
   );

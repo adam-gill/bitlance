@@ -58,8 +58,6 @@ const Dashboard: React.FC = () => {
             const freelancerRes = await freelancerDetails(userId);
             setFreelancerData(freelancerRes.data);
             setIsFreelancer(true);
-            const jobs = await getUserJobs(userId, true);
-            setUserJobs(jobs);
           }
           if(session?.user.data.role === "CLIENT" || session?.user.data.role === "BOTH"){
             const clientRes = await clientDetails(userId);
@@ -70,7 +68,7 @@ const Dashboard: React.FC = () => {
             console.log("Entered Both");
             setCanSwitch(true);
             setIsFreelancer(true);
-          }     
+          }
           setErrorMessage(null);
 
         } catch (error: any) {
@@ -82,7 +80,17 @@ const Dashboard: React.FC = () => {
 
     fetchData();
   }, [session?.user.data.user_id]);
-
+  
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const userId = session?.user.data.user_id;
+      if(userId){
+        const jobs = await getUserJobs(userId, isFreelancer);
+        setUserJobs(jobs);
+      } 
+    }
+    fetchJobs();
+  }, [session?.user.data.user_id, isFreelancer]);
 
   const handleSwitchChange = (checked: boolean) => {
     if (canSwitch) {

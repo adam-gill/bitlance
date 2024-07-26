@@ -58,12 +58,12 @@ const Dashboard: React.FC = () => {
             const freelancerRes = await freelancerDetails(userId);
             setFreelancerData(freelancerRes.data);
             //setIsFreelancer(true);
-            const jobs = await getUserJobs(userId, isFreelancer);
-            setUserJobs(jobs);
+            
           }
           if(session?.user.data.role === "CLIENT" || session?.user.data.role == "BOTH"){
             const clientRes = await clientDetails(userId);
             setClientData(clientRes.data);
+           
             //setIsFreelancer(false);
             
           }
@@ -83,8 +83,20 @@ const Dashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [session?.user.data.user_id,isFreelancer]);
+  }, [session?.user.data.user_id]);
 
+  //removed the fixed boolean
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const userId = session?.user.data.user_id;
+      if(userId){
+        const jobs = await getUserJobs(userId, isFreelancer);
+        setUserJobs(jobs);
+      } 
+    }
+    fetchJobs();
+  }, [session?.user.data.user_id, isFreelancer]);
 
   const handleSwitchChange = (checked: boolean) => {
     if (canSwitch) {

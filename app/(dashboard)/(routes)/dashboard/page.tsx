@@ -57,20 +57,18 @@ const Dashboard: React.FC = () => {
           if(session?.user.data.role === "FREELANCER" || session?.user.data.role == "BOTH"){
             const freelancerRes = await freelancerDetails(userId);
             setFreelancerData(freelancerRes.data);
-            //setIsFreelancer(true);
             
           }
           if(session?.user.data.role === "CLIENT" || session?.user.data.role == "BOTH"){
             const clientRes = await clientDetails(userId);
             setClientData(clientRes.data);
-           
-            //setIsFreelancer(false);
+            setIsFreelancer(false);
             
           }
           if(session?.user.data.role == "BOTH"){
             console.log("Entered Both");
             setCanSwitch(true);
-           // setIsFreelancer(true);
+            setIsFreelancer(true);
            
           }     
           setErrorMessage(null);

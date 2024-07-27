@@ -31,7 +31,22 @@ const JobRequestsPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null >(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { approveLink,InitJob } = useContract();
+  const { approveLink,InitJob,ReleasePayment} = useContract();
+
+
+  //make payment to freelancer
+
+  const handleReleasePayment = async(job_id:string)=>{
+    try{
+      const tx = await ReleasePayment(job_id)
+      if( !tx){
+        setErrorMessage("Payment Already released")
+      }
+
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   const handleSelectFreelancer =async (client_id: string, job_id: string, price: number, freelancerAddress: string, freelancer_id:string, job_status:Status) => {
     try {
@@ -107,7 +122,7 @@ const JobRequestsPage: React.FC = () => {
                       
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
                       {session?.user.data.role != "FREELANCER" && 
-                      <div className='flex  justify-end items-end'><Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button></div>
+                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button >PAY OUT</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
                       }                    </div>
                   </li>
                 ))}

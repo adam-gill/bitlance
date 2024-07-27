@@ -62,13 +62,13 @@ const Dashboard: React.FC = () => {
           if(session?.user.data.role === "CLIENT" || session?.user.data.role == "BOTH"){
             const clientRes = await clientDetails(userId);
             setClientData(clientRes.data);
-            setIsFreelancer(false);
+            //setIsFreelancer(false);
             
           }
           if(session?.user.data.role == "BOTH"){
             console.log("Entered Both");
             setCanSwitch(true);
-            setIsFreelancer(true);
+            //setIsFreelancer(true);
            
           }     
           setErrorMessage(null);
@@ -162,7 +162,7 @@ const Dashboard: React.FC = () => {
                   {isFreelancer
                     ? <div className="max-h-[200px] overflow-y-auto w-full">
                         {userJobs.map((job: JobFreelancer, index: number) => (
-                          <Link key={index} href={`/requests/${job.job_id}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
+                          <Link key={index} href={`/requests/${job.job_id}/${isFreelancer}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
                             <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
                               {job.job?.title }
                             </h3>
@@ -174,12 +174,12 @@ const Dashboard: React.FC = () => {
                       </div>
                     : <div className="max-h-[200px] overflow-y-auto w-full">
                         {userJobs.map((job: any, index: number) => (
-                          <Link key={index} href={`/requests/${job.job_id}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
+                          <Link key={index} href={`/requests/${job.job_id}/${isFreelancer}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
                             <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
-                              {job.title ?? "Untitled Job"}
+                              {job?.title}
                             </h3>
                             <p className="text-center">
-                              {job.description ?? "No description available"}
+                              {job?.description}
                             </p>
                           </Link>
                         ))}

@@ -169,6 +169,38 @@ export const updateJobStatusToInProgress = async (job_id: string,client_id:strin
     console.error("Something went wrong", error);
   }
 };
+
+//update job to Close
+export const updateJobStatusToClose = async (job_id: string,client_id:string | undefined, freelancer_id:string|undefined) => {
+  try {
+    const res = await axios.patch('/api/clientjob/updateclose', {
+      job_id, client_id, freelancer_id
+    }, {
+      headers: { "Content-Type": "application/json" },
+    });
+    
+    
+    return res;
+  } catch (error) {
+    console.error("Something went wrong", error);
+  }
+};
+
+//update job to completed
+export const updateJobStatusToCompleted = async (job_id: string, freelancer_id:string|undefined) => {
+  try {
+    const res = await axios.patch('/api/clientjob/updatecomplete', {
+      job_id,freelancer_id
+    }, {
+      headers: { "Content-Type": "application/json" },
+    });
+    
+    
+    return res;
+  } catch (error) {
+    console.error("Something went wrong", error);
+  }
+};
 //get all freelancer requests jobs
 
 export const getFreelancerRequestJobs = async (freelancer_id: string | undefined) => {

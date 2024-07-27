@@ -145,7 +145,7 @@ const JobRequestsPage: React.FC = () => {
                       
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
                       {bool == "false" && 
-                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button onClick={()=>handleReleasePayment(request.job_id)} >PAY OUT</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
+                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button onClick={()=>handleReleasePayment(request.job_id)} >PAY OUT</Button>:request.job.status == "CLOSED"?<Button disabled={true}>PAID</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
                       }
                       {bool == "true" && 
                       <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button onClick={()=>handleJobComplete(request.job.job_id)} className='bg-green-800' >COMPLETE</Button>:request.job.status == "COMPLETED"?<Button disabled={true} >WAITING FOR PAYMENT</Button>:request.job.status == "OPEN"?<Button disabled={true}>PENDING</Button>:<Button disabled={true}>JOB CLOSED</Button>}</div>

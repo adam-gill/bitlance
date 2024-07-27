@@ -12,7 +12,7 @@ import useContract from '@/modeContracts/useContract';
 import { ethers } from 'ethers';
 import { useSimulateContract } from 'wagmi';
 import { BITLANCECONTRACT, CHAINLINKERC20 } from '@/constant/contracts';
-import BITLANCEABI from "../../../../../abi/bitlance.json"
+import BITLANCEABI from "../../../../../../abi/bitlance.json"
 import InitTheJob from '@/modeContracts/simulates';
 import { Status } from '@prisma/client';
 
@@ -25,13 +25,17 @@ interface JobRequest {
 }
 
 const JobRequestsPage: React.FC = () => {
-  const { id } = useParams(); // Get the job ID from the URL using useParams
+  
+  const { id,bool } = useParams(); // Get the job ID from the URL using useParams
   const { data: session } = useSession();
+  
   const [requests, setRequests] = useState<JobFreelancer[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null >(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { approveLink,InitJob,ReleasePayment} = useContract();
+  //console.log("the role is role",role)
+  
 
 
   //make payment to freelancer
@@ -121,9 +125,14 @@ const JobRequestsPage: React.FC = () => {
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Status:</span> {request.job.status}</p>
                       
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
-                      {session?.user.data.role != "FREELANCER" && 
-                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button >PAY OUT</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
-                      }                    </div>
+                      {bool == "false" && 
+                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button onClick={()=>handleReleasePayment(request.job_id)} >PAY OUT</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
+                      }
+                      {bool == "true" && 
+                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' >COMPLETE</Button>:request.job.status == "COMPLETED"?<Button disabled={true} >WAITING FOR PAYMENT</Button>:request.job.status == "OPEN"?<Button disabled={true}>PENDING</Button>:<Button disabled={true}>JOB CLOSED</Button>}</div>
+                      }
+                      
+                        </div>
                   </li>
                 ))}
               </ul>

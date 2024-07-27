@@ -11,7 +11,7 @@ export async function PATCH(request: NextRequest) {
     }
 
    
-    const freelancer = await prisma.freelancer.findUnique({where:{user_id:freelancer_id}});
+    //const freelancer = await prisma.freelancer.findUnique({where:{user_id:freelancer_id}});
     
 
 
@@ -30,7 +30,7 @@ export async function PATCH(request: NextRequest) {
 
     const updatedJob = await prisma.job.update({
       where: { job_id },
-      data: { status: Status.COMPLETED, freelancer_id:freelancer?.f_id},
+      data: { status: Status.COMPLETED, u_id:freelancer_id},
     });
 
     console.log("Job status updated to COMPLETED");

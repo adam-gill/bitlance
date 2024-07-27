@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { JobFreelancer } from '@/app/(dashboard)/(routes)/dashboard/page';
-import { updateJobStatusToInProgress } from '@/config/apiconfig';
+import { updateJobStatusToInProgress,updateJobStatusToCompleted } from '@/config/apiconfig';
 import useContract from '@/modeContracts/useContract';
 import { ethers } from 'ethers';
 import { useSimulateContract } from 'wagmi';
@@ -51,6 +51,25 @@ const JobRequestsPage: React.FC = () => {
       console.log(err)
     }
   }
+
+  //handle job to done
+
+  const handleJobComplete = async(job_id:string)=>{
+    try{
+      const res = await updateJobStatusToCompleted(job_id,session?.user.data.user_id)
+      if(res?.status ==200){
+        //setErrorMessage("Job completed successfully")
+        console.log("res update is ",res)
+      }
+
+
+
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+
 
   const handleSelectFreelancer =async (client_id: string, job_id: string, price: number, freelancerAddress: string, freelancer_id:string, job_status:Status) => {
     try {
@@ -129,7 +148,7 @@ const JobRequestsPage: React.FC = () => {
                       <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button onClick={()=>handleReleasePayment(request.job_id)} >PAY OUT</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
                       }
                       {bool == "true" && 
-                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' >COMPLETE</Button>:request.job.status == "COMPLETED"?<Button disabled={true} >WAITING FOR PAYMENT</Button>:request.job.status == "OPEN"?<Button disabled={true}>PENDING</Button>:<Button disabled={true}>JOB CLOSED</Button>}</div>
+                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button onClick={()=>handleJobComplete(request.job.job_id)} className='bg-green-800' >COMPLETE</Button>:request.job.status == "COMPLETED"?<Button disabled={true} >WAITING FOR PAYMENT</Button>:request.job.status == "OPEN"?<Button disabled={true}>PENDING</Button>:<Button disabled={true}>JOB CLOSED</Button>}</div>
                       }
                       
                         </div>

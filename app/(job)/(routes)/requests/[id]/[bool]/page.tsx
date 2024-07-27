@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { JobFreelancer } from '@/app/(dashboard)/(routes)/dashboard/page';
-import { updateJobStatusToInProgress,updateJobStatusToCompleted } from '@/config/apiconfig';
+import { updateJobStatusToInProgress,updateJobStatusToCompleted,updateJobStatusToClose } from '@/config/apiconfig';
 import useContract from '@/modeContracts/useContract';
 import { ethers } from 'ethers';
 import { useSimulateContract } from 'wagmi';
@@ -40,12 +40,19 @@ const JobRequestsPage: React.FC = () => {
 
   //make payment to freelancer
 
-  const handleReleasePayment = async(job_id:string)=>{
+  const handleReleasePayment = async(job_id:string,freelancer_id:string)=>{
     try{
-      const tx = await ReleasePayment(job_id)
-      if( !tx){
-        setErrorMessage("Payment Already released")
+      const res = await updateJobStatusToClose(job_id,session?.user.data.user_id,freelancer_id)
+      if(res?.status == 200){
+        const tx = await ReleasePayment(job_id)
+        if( !tx){
+          //setErrorMessage("Payment Already released")
+          console.log("payement released")
+        }
+
       }
+
+     
 
     }catch(err){
       console.log(err)
@@ -145,7 +152,7 @@ const JobRequestsPage: React.FC = () => {
                       
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
                       {bool == "false" && 
-                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button onClick={()=>handleReleasePayment(request.job_id)} >PAY OUT</Button>:request.job.status == "CLOSED"?<Button disabled={true}>PAID</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
+                      <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button onClick={()=>handleReleasePayment(request.job_id,request.freelancer_id)} >PAY OUT</Button>:request.job.status == "CLOSED"?<Button disabled={true}>PAID</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
                       }
                       {bool == "true" && 
                       <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button onClick={()=>handleJobComplete(request.job.job_id)} className='bg-green-800' >COMPLETE</Button>:request.job.status == "COMPLETED"?<Button disabled={true} >WAITING FOR PAYMENT</Button>:request.job.status == "OPEN"?<Button disabled={true}>PENDING</Button>:<Button disabled={true}>JOB CLOSED</Button>}</div>

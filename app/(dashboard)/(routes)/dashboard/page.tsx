@@ -11,6 +11,7 @@ import { ConnectBtn } from '@/components/Connect';
 import CreateJobModal from '@/components/ui/CreateJobModal';
 import { Category, Status } from '@prisma/client';
 import BrowseJobs from "@/components/pages/browseJobs";
+import CompletedJobs from "@/components/pages/completedJobs";
 import Link from 'next/link';
 
 export interface JobFreelancer {
@@ -189,9 +190,10 @@ const Dashboard: React.FC = () => {
             </div>
           )}
           {selectedTab === "Completed Jobs" && (
-            <div>
-              <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">Completed Jobs</h2>
-              <p className="text-center">Completed jobs content goes here.</p>
+            <div className="flex flex-col min-h-screen">
+              <div className="max-h-[80vh] overflow-y-auto w-full">
+                <CompletedJobs />
+              </div>
             </div>
           )}
           {selectedTab === "User Profile" && (

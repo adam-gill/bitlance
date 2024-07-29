@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { JobFreelancer } from '@/app/(dashboard)/(routes)/dashboard/page';
-import { updateJobStatusToInProgress,updateJobStatusToCompleted,updateJobStatusToClose } from '@/config/apiconfig';
+import { updateJobStatusToInProgress,updateJobStatusToCompleted,updateJobStatusToClose,updateJobStatusToOpen } from '@/config/apiconfig';
 import useContract from '@/modeContracts/useContract';
 import { ethers } from 'ethers';
 import { useSimulateContract } from 'wagmi';
@@ -45,7 +45,9 @@ const JobRequestsPage: React.FC = () => {
       const res = await updateJobStatusToClose(job_id,session?.user.data.user_id,freelancer_id)
       if(res?.status == 200){
         const tx = await ReleasePayment(job_id)
-        if( !tx){
+        if(!tx){
+          //rollback to job completed
+          const res = await updateJobStatusToCompleted(job_id,freelancer_id)
           //setErrorMessage("Payment Already released")
           console.log("payement released")
         }
@@ -92,6 +94,9 @@ const JobRequestsPage: React.FC = () => {
           await new Promise(resolve => setTimeout(resolve, 10000));
           console.log("user address",freelancerAddress)
           const init = await InitJob(job_id,freelancerAddress as `0x${string}`);
+          if (!init) {
+            const res = await updateJobStatusToOpen(job_id,session?.user.data.user_id, freelancer_id)
+          }
           
           console.log("Init transaction:", init);
         }

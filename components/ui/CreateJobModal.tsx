@@ -44,8 +44,10 @@ const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: strin
       }
       await createJob(jobDetails);
       handleClose();
+      alert("Job creation Successfull!");
     } catch (err) {
       setError('Failed to create job. Please try again.');
+      alert("Job creation Failed!");
     }
   };
 
@@ -121,7 +123,7 @@ const JobModal: React.FC<{ isOpen: boolean; onClose: () => void; clientId: strin
                     type="number"
                     onChange={(e) => setPrice(e.target.value)}
                     className="w-full p-3 rounded-md bg-white text-gray-800"
-                    placeholder="Price"
+                    placeholder="Price in LINK"
                     value={price}
                     required
                   />

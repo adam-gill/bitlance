@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-primaryBitlanceDark text-white">
+    <div className="min-h-screen flex flex-col bg-primaryBitlanceDark text-white overflow-y-auto">
       <header className="bg-primaryBitlanceDark p-4 shadow-lg flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl text-primaryBitlanceLightGreen font-bold">
           Welcome: {session?.user.data.email}
@@ -154,37 +154,49 @@ const Dashboard: React.FC = () => {
             </div>
           )}
           {selectedTab === "My Jobs" && (
-            <div>
-              <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">My Jobs</h2>
+            <div className="h-[75vh] flex flex-col overflow-y-auto">
+              <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">
+                My Jobs
+              </h2>
               {Array.isArray(userJobs) && userJobs.length === 0 ? (
                 <p className="text-center">No jobs found.</p>
               ) : (
-                <div className="flex flex-col items-center">
-                  {isFreelancer
-                    ? <div className="max-h-[200px] overflow-y-auto w-full">
-                        {userJobs.map((job: JobFreelancer, index: number) => (
-                          <Link key={index} href={`/requests/${job.job_id}/${isFreelancer}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
-                            <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
-                              {job.job?.title }
-                            </h3>
-                            <p className="text-center">
-                              {job.job?.description}
-                            </p>
-                          </Link>
-                        ))}
-                      </div>
-                    : <div className="max-h-[200px] overflow-y-auto w-full">
-                        {userJobs.map((job: any, index: number) => (
-                          <Link key={index} href={`/requests/${job.job_id}/${isFreelancer}`} className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block">
-                            <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
-                              {job?.title}
-                            </h3>
-                            <p className="text-center">
-                              {job?.description}
-                            </p>
-                          </Link>
-                        ))}
-                      </div>}
+                <div className="flex-1 flex flex-col items-center overflow-y-auto">
+                  {isFreelancer ? (
+                    <div className="flex-1 overflow-y-auto w-[80%]">
+                      {userJobs.map((job: JobFreelancer, index: number) => (
+                        <Link
+                          key={index}
+                          href={`/requests/${job.job_id}/${isFreelancer}`}
+                          className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block"
+                        >
+                          <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
+                            {job.job?.title}
+                          </h3>
+                          <p className="text-center">
+                            {job.job?.description}
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex-1 overflow-y-auto w-[80%]">
+                      {userJobs.map((job: any, index: number) => (
+                        <Link
+                          key={index}
+                          href={`/requests/${job.job_id}/${isFreelancer}`}
+                          className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block"
+                        >
+                          <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
+                            {job?.title}
+                          </h3>
+                          <p className="text-center">
+                            {job?.description}
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

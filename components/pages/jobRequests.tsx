@@ -68,15 +68,19 @@ const JobRequestsPage: React.FC = () => {
       const client_id = session?.user?.data?.user_id;
       const freelancer_id = selectedRequest?.freelancer_id;
       if (client_id && freelancer_id) {
+        setLoading(true);
         const res = await updateJobStatusToInProgress(selectedRequest.job_id, client_id, freelancer_id);
         if (res && res.data.success) {
           alert("Freelancer selected successfully.");
+          setLoading(false);
           // Optionally update jobRequests state here to reflect changes
         } else {
           setErrorMessage("Failed to select freelancer.");
+          setLoading(false);
         }
       } else {
         setErrorMessage("Client ID or Freelancer ID is missing.");
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error selecting freelancer:", error);
@@ -89,16 +93,20 @@ const JobRequestsPage: React.FC = () => {
   const handlePayoutFreelancer = async (requestId: string) => {
     setButtonLoading(requestId);
     try {
+      setLoading(true);
       const res = await console.log("Insert payout here"); //payoutFreelancer(requestId);
       if (true) { // Placeholder
         alert("Payout successful.");
+        setLoading(false);
         // Optionally update jobRequests state here to reflect changes
       } else {
         setErrorMessage("Failed to payout freelancer.");
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error paying out freelancer:", error);
       setErrorMessage("An error occurred while paying out the freelancer.");
+      setLoading(false);
     } finally {
       setButtonLoading(null);
     }
@@ -117,7 +125,27 @@ const JobRequestsPage: React.FC = () => {
       <main className="flex-grow p-8">
         {loading ? (
           <div className="flex justify-center items-center h-full">
-            <p className="text-lg text-primaryBitlanceLightGreen">Loading job requests...</p>
+            <svg
+              className="animate-spin h-10 w-10 text-primaryBitlanceLightGreen"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <p className="text-lg text-primaryBitlanceLightGreen ml-4">Loading job requests...</p>
           </div>
         ) : (
           <div className="mt-8 flex flex-col items-center">
@@ -139,7 +167,26 @@ const JobRequestsPage: React.FC = () => {
                           disabled={buttonLoading === request.id}
                         >
                           {buttonLoading === request.id ? (
-                            <svg className="animate-spin h-5 w-5 mr-3 border-t-2 border-white rounded-full" viewBox="0 0 24 24"></svg>
+                            <svg
+                              className="animate-spin h-5 w-5 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
                           ) : request.job.status === "OPEN" ? "Select" : "Payout"}
                         </Button>
                       </div>

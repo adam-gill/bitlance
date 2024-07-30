@@ -148,7 +148,7 @@ const JobsPage: React.FC = () => {
                 ))}
               </ul>
             ) : (
-              <p className="text-center text-lg text-primaryBitlanceLightGreen">No jobs available.</p>
+              <p className="text-center text-lg text-primaryBitlanceLightGreen">No jobs completed.</p>
             )}
             {errorMessage && <p className="text-center text-lg text-red-500">{errorMessage}</p>}
           </div>

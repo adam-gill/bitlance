@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { getRequestsPerJob, updateJobStatusToInProgress } from '@/config/apiconfig'; // Import necessary functions
+import { getRequestsPerJob, updateJobStatusToInProgress } from '@/config/apiconfig';
 import { useSession, signOut } from "next-auth/react";
 
 interface JobRequest {
@@ -29,7 +29,7 @@ const JobRequestsPage: React.FC = () => {
   const [jobRequests, setJobRequests] = useState<JobRequest[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [buttonLoading, setButtonLoading] = useState<string | null>(null); // Add loading state for buttons
+  const [buttonLoading, setButtonLoading] = useState<string | null>(null);
   const jobId = searchParams.get("job_id");
 
   useEffect(() => {
@@ -138,11 +138,9 @@ const JobRequestsPage: React.FC = () => {
                           className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-4 py-2"
                           disabled={buttonLoading === request.id}
                         >
-                          {buttonLoading === request.id
-                            ? "Processing..."
-                            : request.job.status === "OPEN"
-                              ? "Select"
-                              : "Payout"}
+                          {buttonLoading === request.id ? (
+                            <svg className="animate-spin h-5 w-5 mr-3 border-t-2 border-white rounded-full" viewBox="0 0 24 24"></svg>
+                          ) : request.job.status === "OPEN" ? "Select" : "Payout"}
                         </Button>
                       </div>
                     </div>

@@ -9,9 +9,8 @@ import { FreelancerData, ClientData } from '@/types/data-types';
 import { useRouter } from 'next/navigation';
 import { ConnectBtn } from '@/components/Connect';
 import CreateJobModal from '@/components/ui/CreateJobModal';
-import { Category, Status } from '@prisma/client';
+import { Category, Job, Status } from '@prisma/client';
 import BrowseJobs from "@/components/pages/browseJobs";
-import CompletedJobs from "@/components/pages/completedJobs";
 import Link from 'next/link';
 
 export interface JobFreelancer {
@@ -49,6 +48,7 @@ const Dashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState("My Jobs");
   const [canSwitch, setCanSwitch] = useState(false);
   const router = useRouter();
+  const [completedJobs, setCompletedJobs] = useState<Job[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,7 +91,8 @@ const Dashboard: React.FC = () => {
       const userId = session?.user.data.user_id;
       if(userId){
         const jobs = await getUserJobs(userId, isFreelancer);
-        setUserJobs(jobs);
+        setUserJobs(jobs.filter((job:Job) => job.status === "OPEN" || job.status === "INPROGRESS"));
+        setCompletedJobs(jobs.filter((job:Job) => job.status === "COMPLETED" || job.status === "CLOSED"));
       } 
     }
     fetchJobs();
@@ -154,34 +155,38 @@ const Dashboard: React.FC = () => {
             </div>
           )}
           {selectedTab === "My Jobs" && (
-            <div className="h-[75vh] flex flex-col overflow-y-auto">
+            <div className="flex flex-col min-h-screen">
               <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">
                 My Jobs
               </h2>
+              <div className="max-h-[80vh] overflow-y-auto w-full">
               {Array.isArray(userJobs) && userJobs.length === 0 ? (
                 <p className="text-center">No jobs found.</p>
               ) : (
                 <div className="flex-1 flex flex-col items-center overflow-y-auto">
                   {isFreelancer ? (
                     <div className="flex-1 overflow-y-auto w-[80%]">
-                      {userJobs.map((job: JobFreelancer, index: number) => (
+                      {userJobs.map((job: Job, index: number) => (
                         <Link
                           key={index}
                           href={`/requests/${job.job_id}/${isFreelancer}`}
                           className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block"
                         >
                           <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
-                            {job.job?.title}
+                            {job.title}
                           </h3>
                           <p className="text-center">
-                            {job.job?.description}
+                            {job.description}
+                          </p>
+                          <p className="text-center">
+                            STATUS: {job.status}
                           </p>
                         </Link>
                       ))}
                     </div>
                   ) : (
                     <div className="flex-1 overflow-y-auto w-[80%]">
-                      {userJobs.map((job: any, index: number) => (
+                      {userJobs.map((job: Job, index: number) => (
                         <Link
                           key={index}
                           href={`/requests/${job.job_id}/${isFreelancer}`}
@@ -193,18 +198,69 @@ const Dashboard: React.FC = () => {
                           <p className="text-center">
                             {job?.description}
                           </p>
+                          <p className="text-center">
+                          STATUS: {job?.status}
+                          </p>
                         </Link>
                       ))}
                     </div>
                   )}
                 </div>
               )}
+              </div>
             </div>
           )}
           {selectedTab === "Completed Jobs" && (
             <div className="flex flex-col min-h-screen">
+              <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">
+                Completed Jobs
+              </h2>
               <div className="max-h-[80vh] overflow-y-auto w-full">
-                <CompletedJobs />
+              {Array.isArray(completedJobs) && completedJobs.length === 0 ? (
+                <p className="text-center">No jobs Completed</p>
+              ) : (
+                <div className="flex-1 flex flex-col items-center overflow-y-auto">
+                  {isFreelancer ? (
+                    <div className="flex-1 overflow-y-auto w-[80%]">
+                      {completedJobs.map((job: Job, index: number) => (
+                        <div
+                          key={index}
+                          className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block"
+                        >
+                          <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
+                            {job.title}
+                          </h3>
+                          <p className="text-center">
+                            {job.description}
+                          </p>
+                          <p className="text-center">
+                            {job.price} LINK
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex-1 overflow-y-auto w-[80%]">
+                      {completedJobs.map((job: Job, index: number) => (
+                        <div
+                          key={index}
+                          className="bg-primaryBitlanceDark p-4 rounded-lg shadow-lg border border-primaryBitlanceLightGreen mb-4 block"
+                        >
+                          <h3 className="text-lg text-center font-semibold text-primaryBitlanceLightGreen">
+                            {job?.title}
+                          </h3>
+                          <p className="text-center">
+                            {job?.description}
+                          </p>
+                          <p className="text-center">
+                            {job?.price} LINK
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
               </div>
             </div>
           )}

@@ -24,8 +24,7 @@ export async function GET(request: NextRequest) {
       if (!freelancer) {
         return NextResponse.json({ success: false, message: "Freelancer not found" }, { status: 404 });
       }
-
-      jobs = freelancer;
+      jobs = freelancer.map(item => item.job);
     } else {
       const client = await prisma.client.findFirst({
         where: { user: { user_id } }, // Query by the user relation
@@ -35,7 +34,6 @@ export async function GET(request: NextRequest) {
       if (!client) {
         return NextResponse.json({ success: false, message: "Client not found" }, { status: 404 });
       }
-      console.log(client);
 
       jobs = client.jobs;
     }

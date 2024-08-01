@@ -123,25 +123,55 @@ const Dashboard: React.FC = () => {
         </div>
       </header>
       <div className="flex-grow flex">
-        <nav className="bg-primaryBitlanceDark p-4 w-1/4 shadow-lg border-r border-primaryBitlanceLightGreen flex flex-col justify-evenly">
+      <nav className="bg-primaryBitlanceDark p-4 w-1/4 shadow-lg border-r border-primaryBitlanceLightGreen flex flex-col justify-evenly">
           <ul className="space-y-4">
             {isFreelancer && (
               <li>
-                <Button variant="outline" className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen" onClick={() => handleTabChange("Browse Jobs")}>Browse Jobs</Button>
+                <Button
+                  variant="outline"
+                  className={`w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen ${selectedTab === "Browse Jobs" ? "bg-primaryBitlanceLightGreen text-primaryBitlanceDark" : ""}`}
+                  onClick={() => handleTabChange("Browse Jobs")}
+                >
+                  Browse Jobs
+                </Button>
               </li>
             )}
             <li>
-              <Button variant="outline" className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen" onClick={() => handleTabChange("My Jobs")}>My Jobs</Button>
+              <Button
+                variant="outline"
+                className={`w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen ${selectedTab === "My Jobs" ? "bg-primaryBitlanceLightGreen text-primaryBitlanceDark" : ""}`}
+                onClick={() => handleTabChange("My Jobs")}
+              >
+                My Jobs
+              </Button>
             </li>
             <li>
-              <Button variant="outline" className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen" onClick={() => handleTabChange("Completed Jobs")}>Completed Jobs</Button>
+              <Button
+                variant="outline"
+                className={`w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen ${selectedTab === "Completed Jobs" ? "bg-primaryBitlanceLightGreen text-primaryBitlanceDark" : ""}`}
+                onClick={() => handleTabChange("Completed Jobs")}
+              >
+                Completed Jobs
+              </Button>
             </li>
             <li>
-              <Button variant="outline" className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen" onClick={() => handleTabChange("User Profile")}>User Profile</Button>
+              <Button
+                variant="outline"
+                className={`w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen ${selectedTab === "User Profile" ? "bg-primaryBitlanceLightGreen text-primaryBitlanceDark" : ""}`}
+                onClick={() => handleTabChange("User Profile")}
+              >
+                User Profile
+              </Button>
             </li>
             {!isFreelancer && (
               <li>
-                <Button variant="outline" className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen" onClick={() => setIsJobModalOpen(true)}>Create Job</Button>
+                <Button
+                  variant="outline"
+                  className="w-full text-left text-primaryBitlanceLightGreen bg-transparent border-primaryBitlanceLightGreen"
+                  onClick={() => setIsJobModalOpen(true)}
+                >
+                  Create Job
+                </Button>
               </li>
             )}
           </ul>
@@ -159,7 +189,7 @@ const Dashboard: React.FC = () => {
               <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">
                 My Jobs
               </h2>
-              <div className="max-h-[80vh] overflow-y-auto w-full">
+              <div className="max-h-[70vh] overflow-y-auto w-full">
               {Array.isArray(userJobs) && userJobs.length === 0 ? (
                 <p className="text-center">No jobs found.</p>
               ) : (
@@ -215,7 +245,7 @@ const Dashboard: React.FC = () => {
               <h2 className="text-2xl md:text-3xl font-semibold text-primaryBitlanceLightGreen mb-4 text-center">
                 Completed Jobs
               </h2>
-              <div className="max-h-[80vh] overflow-y-auto w-full">
+              <div className="max-h-[70vh] overflow-y-auto w-full">
               {Array.isArray(completedJobs) && completedJobs.length === 0 ? (
                 <p className="text-center">No jobs Completed</p>
               ) : (

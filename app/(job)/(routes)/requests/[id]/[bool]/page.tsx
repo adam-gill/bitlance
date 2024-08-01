@@ -15,6 +15,8 @@ import { BITLANCECONTRACT, CHAINLINKERC20 } from '@/constant/contracts';
 import BITLANCEABI from "../../../../../../abi/bitlance.json"
 import InitTheJob from '@/modeContracts/simulates';
 import { Status } from '@prisma/client';
+import { JobRequestDetails } from '@/types/data-types';
+import { JobAlertdetails } from '@/components/jobrequestAlert';
 
 interface JobRequest {
   request_id: string;
@@ -29,11 +31,12 @@ const JobRequestsPage: React.FC = () => {
   const { id,bool } = useParams(); // Get the job ID from the URL using useParams
   const { data: session } = useSession();
   
-  const [requests, setRequests] = useState<JobFreelancer[]>([]);
+  const [requests, setRequests] = useState<JobRequestDetails[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null >(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { approveLink,InitJob,ReleasePayment} = useContract();
+  const [openAlert,setOpenAlert] = useState<boolean>(false);
   //console.log("the role is role",role)
   
 
@@ -150,13 +153,22 @@ const JobRequestsPage: React.FC = () => {
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Job ID:</span> {request.job_id}</p>
                       <p className="text-sm text-gray-300 mb-1"><span className="font-bold">Status:</span> {request.job.status}</p>
                       
+                      
                       <p className="text-sm text-gray-300"><span className="font-bold">Created At:</span> {new Date(request.job.created_at).toLocaleDateString()}</p>
+                      <div className='flex justify-between items-center mt-4'>
+                      <div className='flex justify-start items-start'>
+                        <Button onClick={()=>setOpenAlert(true)}>Details</Button>
+
+                      </div>
+                      
                       {bool == "false" && 
                       <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button className='bg-green-800' disabled ={true}>WAITING</Button>:request.job.status == "COMPLETED"?<Button onClick={()=>handleReleasePayment(request.job_id,request.freelancer_id)} >PAY OUT</Button>:request.job.status == "CLOSED"?<Button disabled={true}>PAID</Button>:<Button onClick={()=>handleSelectFreelancer(request.client_id,request.job_id,request.job.price,request.freelancer_address, request.freelancer_id, request.job.status )}>Select</Button>}</div>
                       }
                       {bool == "true" && 
                       <div className='flex  justify-end items-end'>{request.job.status == "INPROGRESS"?<Button onClick={()=>handleJobComplete(request.job.job_id)} className='bg-green-800' >COMPLETE</Button>:request.job.status == "COMPLETED"?<Button disabled={true} >WAITING FOR PAYMENT</Button>:request.job.status == "OPEN"?<Button disabled={true}>PENDING</Button>:<Button disabled={true}>JOB CLOSED</Button>}</div>
                       }
+                     </div>
+                      <JobAlertdetails open={openAlert} setOpen={setOpenAlert} jobRequest={request}/>
                       
                         </div>
                   </li>

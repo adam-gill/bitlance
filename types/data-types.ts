@@ -64,9 +64,16 @@ export type User = {
     email:string,
     name:string,
    
+    bio:string,
+    skills:string,
+    portfolio_link:string,
+    social_link:string,
+   
     role:string,
     user_id:string,
-    username:string
+    username:string,
+    user:User
+
 
   }
 

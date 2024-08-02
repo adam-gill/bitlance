@@ -39,6 +39,19 @@ import {
                   <div className="flex flex-col gap-2 mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold">Name:</span> {jobRequest.freelancer.name}
+                     
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">Skills:</span> {jobRequest.freelancer.skills}
+                     
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">Bio:</span> {jobRequest.freelancer.bio}
+                     
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">Portfolio:</span> {jobRequest.freelancer.portfolio_link}
+                     
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold">Email:</span> {jobRequest.freelancer.email}

@@ -17,6 +17,7 @@ import InitTheJob from '@/modeContracts/simulates';
 import { Status } from '@prisma/client';
 import { JobRequestDetails } from '@/types/data-types';
 import { JobAlertdetails } from '@/components/jobrequestAlert';
+import { BackwardIcon } from '@heroicons/react/24/outline';
 
 interface JobRequest {
   request_id: string;
@@ -137,6 +138,16 @@ const JobRequestsPage: React.FC = () => {
         </Button>
       </header>
       <main className="flex-grow p-8">
+      <header >
+        <div  className='w-20 h-10'
+        
+          onClick={() => router.replace("/dashboard")} 
+         
+        >
+          <BackwardIcon  className="bg-primaryBitlanceLightGreen text-black font-semibold rounded-md hover:bg-primaryBitlanceGreen transition duration-300 px-6 py-2"/>
+        </div>
+      </header>
+
         {loading ? (
           <div className="flex justify-center items-center h-full">
             <p className="text-lg text-primaryBitlanceLightGreen">Loading requests...</p>

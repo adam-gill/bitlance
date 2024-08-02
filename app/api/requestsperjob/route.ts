@@ -15,7 +15,8 @@ export async function GET(request: NextRequest) {
       include: {
         freelancer: true,  // Including freelancer details
         client: true,  // Including client details
-        job: true  // Including job details
+        job: true , // Including job details
+        
       },
     });
 

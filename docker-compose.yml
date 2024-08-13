@@ -4,11 +4,5 @@ services:
     build: .
     container_name: bitlance-dapp
     env_file: ".env"
-    # environment:
-    #   - DATABASE_URL="postgresql://postgres.rmdmpdvcnlkxwlokcxmr:BitLance2024@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
-    #   - NEXT_PUBLIC_SUPABASE_URL="https://rmdmpdvcnlkxwlokcxmr.supabase.co/"
-    #   - NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtZG1wZHZjbmxreHdsb2tjeG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAwMzQ1MjYsImV4cCI6MjAzNTYxMDUyNn0.CF50dHHr--u3zbhNbKa2In0iyKkrVuTiadb6c6loLcY"
-    #   - NEXTAUTH_URL = "http://localhost:3000/"
-    #   - NEXTAUTH_SECRET = "atr5-gt65-9jet"
     ports:
       - "3000:3000"
